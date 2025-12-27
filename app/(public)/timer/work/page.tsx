@@ -10,13 +10,10 @@ const INITIAL_TIME = SECONDS * WORK_MINUTES;
 
 export default function WorkTimerPage() {
   const { timeLeft, isRunning, toggleTimer } = useTimer(INITIAL_TIME);
-  console.log('page.tsxレンダリング');
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="flex flex-col items-center gap-12">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-black">
         <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} />
         <TimerControls isRunning={isRunning} onToggle={toggleTimer} />
-      </div>
     </div>
   );
 }

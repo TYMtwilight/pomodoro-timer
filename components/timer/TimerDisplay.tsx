@@ -1,6 +1,6 @@
 'use client';
 
-const RADIUS = 180;
+const RADIUS = 160;
 const CIRCUMFERENCE = 2 * RADIUS * Math.PI;
 const CENTER_X = 240;
 const CENTER_Y = 240;
@@ -27,7 +27,6 @@ interface TimerDisplayProps {
 }
 
 export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
-  console.log('TimerDisplayレンダリング');
   // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
   // オフセットの長さだけプログレスバーが表示される → 進捗率が100%になればオフセットの長さが円周と同じになる
@@ -36,7 +35,7 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
   const { minutes, seconds } = formatTime(timeLeft);
 
   return (
-    <div className="relative">
+    <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative">
       <svg width="480" height="480" className="transform -rotate-90">
         <circle
           cx={CENTER_X}
