@@ -1,0 +1,4 @@
+{
+  "cursorpyright.analysis.diagnosticSeverityOverrides": {},
+  "css.lint.unknownAtRules": "ignore"
+}
