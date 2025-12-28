@@ -5,20 +5,24 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause } from 'lucide-react';
 
 interface TimerControlsProps {
+  isWork: boolean;
   isRunning: boolean;
   onToggle: () => void;
 }
 
 export const TimerControls = memo(function TimerControls({
+  isWork,
   isRunning,
   onToggle
 }: TimerControlsProps) {
+  const startLabel = isWork ? '作業を開始する' : '休憩を開始する';
+  const stopLabel = isWork ? '作業を一時停止する' : '休憩を一時停止する';
   return (
     <div className="flex flex-col justify-end items-center w-full max-w-3xl gap-2">
       {isRunning ? (
-        <label htmlFor="stopWork" className="text-white">作業を一時停止する</label>
+        <label htmlFor="stopWork" className="text-white">{stopLabel}</label>
       ) : (
-        <label htmlFor="startWork" className="text-white">作業を開始する</label>
+        <label htmlFor="startWork" className="text-white">{startLabel}</label>
       )}
       <Button
         onClick={onToggle}
