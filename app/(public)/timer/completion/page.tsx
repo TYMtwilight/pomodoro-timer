@@ -1,15 +1,16 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 
-const BLUE_100 = '#d9e6ff';
 const BLUE_300 = '#9db7f9';
 const BLUE_500 = '#4979f5';
 
 export default function CompletionPage() {
+  const router = useRouter();
+  
   const handleStartBreak = () => {
-    console.log('休憩を開始');
+    router.push('/timer/break');
   };
 
   return (
