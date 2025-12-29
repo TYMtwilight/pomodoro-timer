@@ -16,7 +16,7 @@ export default function WorkTimerPage() {
 
   useEffect(() => {
     if(timeLeft === 0 && !isRunning) {
-      router.push('/timer/completion');
+      router.push('/timer/completion?isWork=true');
     }
   }, [timeLeft, router, isRunning]);
   

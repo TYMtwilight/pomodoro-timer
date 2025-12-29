@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 
@@ -7,10 +7,15 @@ const BLUE_300 = '#9db7f9';
 const BLUE_500 = '#4979f5';
 
 export default function CompletionPage() {
+  const searchParams = useSearchParams();
+  const isWork = searchParams.get('isWork') === 'true';
   const router = useRouter();
   
   const handleStartBreak = () => {
     router.push('/timer/break');
+  };
+  const handleStartWork = () => {
+    router.push('/timer/work');
   };
 
   return (
@@ -24,19 +29,21 @@ export default function CompletionPage() {
           completed.
         </h1>
         <p className="text-center text-sm md:text-base">
-          お疲れ様です。5分間だけ頭を空っぽにしましょう。
+          {isWork ? 'お疲れ様です。5分間だけ頭を空っぽにしましょう。' : 'さあ、集中タイムの始まりです！25分間、全力で取り組みましょう。'}
         </p>
       </div>
       <div className="flex flex-6 items-end justify-center w-full max-w-3xl">
         <p className="mb-8 text-xl tracking-wider">
-          next&gt;&gt; <span className="font-mono">5分間の休憩</span>
+          next&gt;&gt; <span className="font-mono">{isWork ? '5分間の休憩' : '25分間の作業'}</span>
         </p>
       </div>
       <div className="flex flex-col items-center justify-end w-full max-w-3xl gap-2">
-        <label htmlFor="startBreak">休憩を開始する</label>
+        <label htmlFor="startBreak">{isWork ? '休憩を開始する' : '作業を開始する'}</label>
         <Button
           id="startBreak"
-          onClick={handleStartBreak}
+          onClick={
+            isWork ? handleStartBreak : handleStartWork
+          }
           size="lg"
           className="w-32 h-32 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
         >

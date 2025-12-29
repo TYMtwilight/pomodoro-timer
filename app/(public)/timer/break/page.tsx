@@ -17,7 +17,7 @@ export default function BreakTimerPage() {
 
   useEffect(() => {
     if(timeLeft === 0 && !isRunning) {
-      router.push('/timer/completion');
+      router.push('/timer/completion?isWork=false');
     }
   }, [timeLeft, router, isRunning]);
 
