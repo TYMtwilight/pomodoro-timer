@@ -1,5 +1,4 @@
 'use client';
-import { useState, useEffect, useCallback, useRef } from 'react';
 
 const RADIUS = 160;
 const CIRCUMFERENCE = 2 * RADIUS * Math.PI;
@@ -15,6 +14,7 @@ const STROKE_FOREGROUND = BLUE_100;
 const STROKE_WIDTH = 8;
 
 interface TimerDisplayProps {
+  isWork: boolean;
   timeLeft: number;
   initialTime: number;
 }
@@ -29,7 +29,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
+export function TimerDisplay({ isWork, timeLeft, initialTime }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -39,8 +39,10 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
   const { minutes, seconds } = formatTime(timeLeft);
 
   return (
-    <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative bg-green-500">
-      <div className="absolute top-4 text-2xl">focus time</div>
+    <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative">
+      <div className="absolute top-4 text-3xl">
+        {isWork ? 'focus time' : 'break time'}
+      </div>
       <div className="absolute inset-0 flex items-center justify-center">
         <span
           className="text-6xl text-white tabular-nums"

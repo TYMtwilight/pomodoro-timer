@@ -22,7 +22,7 @@ export default function WorkTimerPage() {
   
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-        <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} />
+        <TimerDisplay isWork={true} timeLeft={timeLeft} initialTime={INITIAL_TIME} />
         <TimerControls isWork={true} isRunning={isRunning} onToggle={toggleTimer} />
     </div>
   );

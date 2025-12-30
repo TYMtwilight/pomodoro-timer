@@ -23,7 +23,7 @@ export default function BreakTimerPage() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-black">
-      <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} />
+      <TimerDisplay isWork={false} timeLeft={timeLeft} initialTime={INITIAL_TIME} />
       <TimerControls isWork={false} isRunning={isRunning} onToggle={toggleTimer} />
     </div>
   );
