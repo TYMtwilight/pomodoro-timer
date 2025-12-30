@@ -17,11 +17,11 @@ export default function CompletionPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">    
-      <div className="flex flex-col flex-auto items-center max-w-3xl w-full h-480px bg-green-500 relative">
-        <div className="absolute top-4 text-2xl">
+      <div className="flex flex-col flex-auto items-center max-w-3xl w-full h-480px relative">
+        <div className="absolute top-4 text-3xl">
           <span>{isWork ? 'work completed' : 'break complete'}</span>
         </div>
-        <div className="absolute top-12">
+        <div className="absolute top-15">
           <span className="text-center text-sm md:text-base">
             {isWork ? 'お疲れ様です。5分間だけ頭を空っぽにしましょう。' : 'さあ、集中タイムの始まりです！25分間、全力で取り組みましょう。'}
           </span>
@@ -33,7 +33,7 @@ export default function CompletionPage() {
         </div>        
       </div>
 
-      <div className="flex flex-col justify-end items-center w-full max-w-3xl bg-yellow-500 gap-2">
+      <div className="flex flex-col justify-end items-center w-full max-w-3xl gap-2">
         <label htmlFor="startBreak">{isWork ? '休憩を開始する' : '作業を開始する'}</label>
         <Button
           id="startBreak"
