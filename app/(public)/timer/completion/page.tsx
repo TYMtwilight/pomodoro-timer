@@ -3,9 +3,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 
-const BLUE_300 = '#9db7f9';
-const BLUE_500 = '#4979f5';
-
 export default function CompletionPage() {
   const searchParams = useSearchParams();
   const isWork = searchParams.get('isWork') === 'true';
@@ -20,24 +17,23 @@ export default function CompletionPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">    
-      <div className="flex flex-col flex-2 items-center justify-center max-w-3xl w-full gap-4">
-        <h1 className="text-3xl tracking-wider md:text-5xl"
-          style={{
-            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
-          }}
-        >
-          completed.
-        </h1>
-        <p className="text-center text-sm md:text-base">
-          {isWork ? 'お疲れ様です。5分間だけ頭を空っぽにしましょう。' : 'さあ、集中タイムの始まりです！25分間、全力で取り組みましょう。'}
-        </p>
+      <div className="flex flex-col flex-auto items-center max-w-3xl w-full h-480px bg-green-500 relative">
+        <div className="absolute top-4 text-2xl">
+          <span>{isWork ? 'work completed' : 'break complete'}</span>
+        </div>
+        <div className="absolute top-12">
+          <span className="text-center text-sm md:text-base">
+            {isWork ? 'お疲れ様です。5分間だけ頭を空っぽにしましょう。' : 'さあ、集中タイムの始まりです！25分間、全力で取り組みましょう。'}
+          </span>
+        </div>
+        <div className="absolute bottom-8">
+          <span className="tracking-wider">
+            next&gt;&gt; <span className="font-mono">{isWork ? '5分間の休憩' : '25分間の作業'}</span>
+          </span>
+        </div>        
       </div>
-      <div className="flex flex-6 items-end justify-center w-full max-w-3xl">
-        <p className="mb-8 text-xl tracking-wider">
-          next&gt;&gt; <span className="font-mono">{isWork ? '5分間の休憩' : '25分間の作業'}</span>
-        </p>
-      </div>
-      <div className="flex flex-col items-center justify-end w-full max-w-3xl gap-2">
+
+      <div className="flex flex-col justify-end items-center w-full max-w-3xl bg-yellow-500 gap-2">
         <label htmlFor="startBreak">{isWork ? '休憩を開始する' : '作業を開始する'}</label>
         <Button
           id="startBreak"
@@ -45,7 +41,7 @@ export default function CompletionPage() {
             isWork ? handleStartBreak : handleStartWork
           }
           size="lg"
-          className="w-32 h-32 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+          className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
         >
           <Play className="w-8 h-8" />
         </Button>

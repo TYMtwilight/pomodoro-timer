@@ -21,7 +21,7 @@ export default function WorkTimerPage() {
   }, [timeLeft, router, isRunning]);
   
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-black">
+    <div className="flex flex-col items-center min-h-screen bg-black text-white">
         <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} />
         <TimerControls isWork={true} isRunning={isRunning} onToggle={toggleTimer} />
     </div>

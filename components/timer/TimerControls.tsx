@@ -18,7 +18,7 @@ export const TimerControls = memo(function TimerControls({
   const startLabel = isWork ? '作業を開始する' : '休憩を開始する';
   const stopLabel = isWork ? '作業を一時停止する' : '休憩を一時停止する';
   return (
-    <div className="flex flex-col justify-end items-center w-full max-w-3xl gap-2">
+    <div className="flex flex-col justify-end items-center w-full max-w-3xl bg-yellow-500 gap-2">
       {isRunning ? (
         <label htmlFor="stopWork" className="text-white">{stopLabel}</label>
       ) : (
@@ -27,7 +27,7 @@ export const TimerControls = memo(function TimerControls({
       <Button
         onClick={onToggle}
         size="lg"
-        className="w-32 h-32 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+        className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
       >
         {isRunning ? (
           <Pause id="stopWork" className="w-8 h-8" />
