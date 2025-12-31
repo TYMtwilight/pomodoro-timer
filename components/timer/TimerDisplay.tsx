@@ -81,7 +81,6 @@ export function TimerDisplay({ isWork, timeLeft, initialTime }: TimerDisplayProp
           fill="none"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
           className="transition-all duration-1000 ease-linear display-visible"
           style={{
             filter: `drop-shadow(0 0 10px ${BLUE_500})`,
