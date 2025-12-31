@@ -6,7 +6,7 @@ import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
 
 const SECONDS = 60;
-const WORK_MINUTES = 2525;
+const WORK_MINUTES = 25;
 const INITIAL_TIME = SECONDS * WORK_MINUTES;
 
 export default function WorkTimerPage() {
@@ -14,12 +14,12 @@ export default function WorkTimerPage() {
   const isWork = true;
   const autoStart = searchParams.get('autoStart') === 'true';
   
-  const { timeLeft, isRunning, toggleTimer } = useTimer(isWork, INITIAL_TIME, autoStart);
+  const { timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(isWork, INITIAL_TIME, autoStart);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
       <TimerDisplay isWork={true} timeLeft={timeLeft} initialTime={INITIAL_TIME} />
-      <TimerControls isWork={true} isRunning={isRunning} onToggle={toggleTimer} />
+      <TimerControls isWork={true} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
     </div>
   );
 }
