@@ -33,6 +33,7 @@ export function TimerDisplay({ isWork, timeLeft, initialTime }: TimerDisplayProp
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
+
   // オフセットの長さだけプログレスバーが表示される → 進捗率が100%になればオフセットの長さが円周と同じになる
   const strokeDashoffset = CIRCUMFERENCE * progress;
 

@@ -9,10 +9,10 @@ export default function CompletionPage() {
   const router = useRouter();
   
   const handleStartBreak = () => {
-    router.push('/timer/break');
+    router.push('/timer/break?autoStart=true');
   };
   const handleStartWork = () => {
-    router.push('/timer/work');
+    router.push('/timer/work?autoStart=true');
   };
 
   return (
