@@ -17,6 +17,7 @@ interface TimerDisplayProps {
   isWork: boolean;
   timeLeft: number;
   initialTime: number;
+  sessionCount?: number;
 }
 
 // 画面に表示する時間をフォーマットする
@@ -29,7 +30,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ isWork, timeLeft, initialTime }: TimerDisplayProps) {
+export function TimerDisplay({ isWork, timeLeft, initialTime, sessionCount }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -44,6 +45,11 @@ export function TimerDisplay({ isWork, timeLeft, initialTime }: TimerDisplayProp
       <div className="absolute top-4 text-3xl">
         {isWork ? 'focus time' : 'break time'}
       </div>
+      {isWork && sessionCount && (
+        <div className="absolute top-16 text-lg opacity-80">
+          {sessionCount}/4 ポモドーロ
+        </div>
+      )}
       <div className="absolute inset-0 flex items-center justify-center">
         <span
           className="text-6xl text-white tabular-nums"
