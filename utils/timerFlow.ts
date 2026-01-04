@@ -7,14 +7,14 @@ export function getNextTimerType(
   currentTimerType: TimerType,
   sessionCount: number
 ): TimerType {
-  if (currentTimerType === 'work') {
+  if (currentTimerType === 'focus') {
     // 4セッション目の作業完了後はlong-break
     return sessionCount >= 4 ? 'long-break' : 'break';
   }
   if (currentTimerType === 'break' || currentTimerType === 'long-break') {
-    return 'work';
+    return 'focus';
   }
-  return 'work';
+  return 'focus';
 }
 
 /**
@@ -22,7 +22,7 @@ export function getNextTimerType(
  */
 export function getTimerDuration(timerType: TimerType): number {
   switch (timerType) {
-    case 'work':
+    case 'focus':
       return 25 * 60; // 25分
     case 'break':
       return 5 * 60; // 5分
@@ -47,7 +47,7 @@ export function getCompletionMessages(timerType: TimerType, sessionCount: number
   let nextTimerTitle: string;
 
   switch (timerType) {
-    case 'work':
+    case 'focus':
       completionTitle = 'work complete';
       if(sessionCount === 4) {
         nextTimerMessage = 'お疲れ様です。15分間の長い休憩を取りましょう。';

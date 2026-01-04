@@ -7,13 +7,13 @@ import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
 
 const SECONDS = 60;
-const WORK_MINUTES = 1;
-const INITIAL_TIME = SECONDS * WORK_MINUTES;
+const FOCUS_MINUTES = 1;
+const INITIAL_TIME = SECONDS * FOCUS_MINUTES;
 
 export default function WorkTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
-  const timerType: TimerType = 'work';
+  const timerType: TimerType = 'focus';
 
   const {sessionCount, timeLeft, isRunning, toggleTimer, resetTimer} = useTimer(timerType, INITIAL_TIME, autoStart);
 

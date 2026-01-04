@@ -30,8 +30,8 @@ export function useTimer(
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
     switch(timerType) {
-      case 'work':
-        router.replace('/timer/work');
+      case 'focus':
+        router.replace('/timer/focus');
         break;
       case 'break':
         router.replace('/timer/break');
@@ -40,7 +40,7 @@ export function useTimer(
         router.replace('/timer/long-break');
         break;
       default:
-        router.replace('/timer/work');
+        router.replace('/timer/focus');
         break;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

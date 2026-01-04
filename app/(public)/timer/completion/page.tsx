@@ -20,7 +20,7 @@ export default function CompletionPage() {
 
   let startLabel: string;
   switch(nextTimerType) {
-    case 'work':
+    case 'focus':
       startLabel = '作業を開始する';
       break;
     case 'break':
@@ -36,7 +36,7 @@ export default function CompletionPage() {
 
   const handleStartNextTimer = () => {
     // work完了時はセッションをインクリメント
-    if (timerType === 'work') {
+    if (timerType === 'focus') {
       incrementSession();
     }
     // long-break完了時はセッションをリセット

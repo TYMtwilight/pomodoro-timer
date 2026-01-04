@@ -43,7 +43,7 @@ export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount }:
 
   let timerTitle: string;
   switch(timerType) {
-    case 'work':
+    case 'focus':
       timerTitle = 'focus time';
       break;
     case 'break':

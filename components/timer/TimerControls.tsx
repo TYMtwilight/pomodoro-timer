@@ -20,7 +20,7 @@ export const TimerControls = memo(function TimerControls({
 }: TimerControlsProps) {
   let startLabel: string;
   switch(timerType) {
-    case 'work':
+    case 'focus':
       startLabel = '作業を開始する';
       break;
     case 'break':
