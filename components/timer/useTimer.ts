@@ -1,18 +1,23 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from '@/contexts/SessionContext';
+import { TimerType } from '@/types/timerType';
 
 export function useTimer(
-  isWork: boolean,
+  timerType: TimerType,
   initialTime: number,
   autoStart: boolean
 ) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [isRunning, setIsRunning] = useState(false);
+  // autoStartがtrueの場合は自動でカウントダウンがスタートする
+  const [isRunning, setIsRunning] = useState(autoStart);
   // setIntervalのIDを保存するためのRef
   // useRefを使う理由：再レンダリングを引き起こさず、コンポーネントのライフサイクル全体で同じ値を保持できるため
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
-
+  // セッション数を管理する
+  const { sessionCount,} = useSession();
+  // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
     setIsRunning((prev) => !prev);
   }, []);
@@ -22,17 +27,26 @@ export function useTimer(
     setTimeLeft(initialTime);
   }, [initialTime]);
 
-  if (autoStart && !isRunning && timeLeft === initialTime) {
-    toggleTimer();
-  }
-
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
-    if (isWork) {
-      router.replace('/timer/work');
-    } else {
-      router.replace('/timer/break');
+    switch(timerType) {
+      case 'work':
+        router.replace('/timer/work');
+        break;
+      case 'break':
+        router.replace('/timer/break');
+        break;
+      case 'long-break':
+        router.replace('/timer/long-break');
+        break;
+      default:
+        router.replace('/timer/work');
+        break;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     if (isRunning && timeLeft > 0) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
@@ -40,18 +54,17 @@ export function useTimer(
         });
       }, 1000);
     } else if (isRunning && timeLeft === 0) {
+      setIsRunning(false);
+
+      // タイマー完了時、completionページに遷移
       setTimeout(() => {
-        setIsRunning(false);
-        if (isWork) {
-          router.push('/timer/completion?isWork=true');
-        } else {
-          router.push('/timer/completion?isWork=false');
-        }
+        router.push(`/timer/completion?timerType=${timerType}`);
       }, 1000);
+
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
-      } else return;
+      }
     }
 
     return () => {
@@ -59,9 +72,11 @@ export function useTimer(
         clearInterval(intervalRef.current);
       }
     };
-  }, [timeLeft, isWork, router, isRunning]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRunning, timeLeft, timerType]);
 
   return {
+    sessionCount,
     timeLeft,
     isRunning,
     toggleTimer,
