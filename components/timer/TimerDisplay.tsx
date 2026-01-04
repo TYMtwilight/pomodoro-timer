@@ -87,7 +87,8 @@ export function TimerDisplay({ isWork, timeLeft, initialTime, sessionCount }: Ti
           fill="none"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={strokeDashoffset}
-          className="transition-all duration-1000 ease-linear display-visible"
+          strokeLinecap="round"
+          className="transition-all duration-200 ease-linear display-visible"
           style={{
             filter: `drop-shadow(0 0 10px ${BLUE_500})`,
           }}

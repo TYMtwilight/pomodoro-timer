@@ -8,7 +8,7 @@ import { useSession } from '@/contexts/SessionContext';
 import { TimerType } from '@/types/timerType';
 
 const SECONDS = 60;
-const BREAK_MINUTES = 0.1;
+const BREAK_MINUTES = 1;
 const INITIAL_TIME = SECONDS * BREAK_MINUTES;
 const timerType: TimerType = 'break';
 

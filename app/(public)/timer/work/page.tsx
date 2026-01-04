@@ -7,7 +7,7 @@ import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
 
 const SECONDS = 60;
-const WORK_MINUTES = 0.1;
+const WORK_MINUTES = 1;
 const INITIAL_TIME = SECONDS * WORK_MINUTES;
 
 export default function WorkTimerPage() {

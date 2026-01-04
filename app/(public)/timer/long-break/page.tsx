@@ -7,7 +7,7 @@ import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
 
 const SECONDS = 60;
-const LONG_BREAK_MINUTES = 0.1;
+const LONG_BREAK_MINUTES = 1;
 const INITIAL_TIME = SECONDS * LONG_BREAK_MINUTES;
 const timerType: TimerType = 'long-break';
 
