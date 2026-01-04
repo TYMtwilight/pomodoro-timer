@@ -18,7 +18,7 @@ export const TimerControls = memo(function TimerControls({
   onReset
 }: TimerControlsProps) {
   const startLabel = isWork ? '作業を開始する' : '休憩を開始する';
-  const stopLabel = isWork ? '作業を一時停止する' : '休憩を一時停止する';
+  const stopLabel ='一時停止する';
   const resetLabel = 'リセット';
 
   return (
