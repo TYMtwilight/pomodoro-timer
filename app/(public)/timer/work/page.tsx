@@ -15,12 +15,12 @@ export default function WorkTimerPage() {
   const autoStart = searchParams.get('autoStart') === 'true';
   const timerType: TimerType = 'work';
 
-  const {  sessionCount, timeLeft, isRunning, toggleTimer, resetTimer} = useTimer(timerType, INITIAL_TIME, autoStart);
+  const {sessionCount, timeLeft, isRunning, toggleTimer, resetTimer} = useTimer(timerType, INITIAL_TIME, autoStart);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-      <TimerDisplay isWork={true} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount}/>
-      <TimerControls isWork={true} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount}/>
+      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
     </div>
   );
 }

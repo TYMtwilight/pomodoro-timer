@@ -21,8 +21,8 @@ export default function BreakTimerPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-      <TimerDisplay isWork={false} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} />
-      <TimerControls isWork={false} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} />
+      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
     </div>
   );
 }

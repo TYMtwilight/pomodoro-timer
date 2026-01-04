@@ -3,21 +3,36 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { TimerType } from '@/types/timerType';
 
 interface TimerControlsProps {
-  isWork: boolean;
+  timerType: TimerType;
   isRunning: boolean;
   onToggle: () => void;
   onReset: () => void;
 }
 
 export const TimerControls = memo(function TimerControls({
-  isWork,
+  timerType,
   isRunning,
   onToggle,
   onReset
 }: TimerControlsProps) {
-  const startLabel = isWork ? '作業を開始する' : '休憩を開始する';
+  let startLabel: string;
+  switch(timerType) {
+    case 'work':
+      startLabel = '作業を開始する';
+      break;
+    case 'break':
+      startLabel = '休憩を開始する';
+      break;
+    case 'long-break':
+      startLabel = '長い休憩を開始する';
+      break;
+    default:
+      startLabel = '開始する';
+      break;
+  }
   const stopLabel ='一時停止する';
   const resetLabel = 'リセット';
 
@@ -26,9 +41,9 @@ export const TimerControls = memo(function TimerControls({
       <div className="flex items-center">
         <div className="flex flex-col items-center w-40 gap-2">
           {isRunning ? (
-            <label htmlFor="stopWork" className="text-white">{stopLabel}</label>
+            <label htmlFor="stopWork" className="text-white text-sm">{stopLabel}</label>
           ) : (
-            <label htmlFor="startWork" className="text-white">{startLabel}</label>
+            <label htmlFor="startWork" className="text-white text-sm">{startLabel}</label>
           )}
           <Button
             onClick={onToggle}
@@ -43,7 +58,7 @@ export const TimerControls = memo(function TimerControls({
           </Button>
         </div>
         <div className="flex flex-col items-center w-40 gap-2">
-          <label htmlFor="resetTimer" className="text-white">{resetLabel}</label>
+          <label htmlFor="resetTimer" className="text-white text-sm">{resetLabel}</label>
           <Button
             onClick={onReset}
             size="lg"

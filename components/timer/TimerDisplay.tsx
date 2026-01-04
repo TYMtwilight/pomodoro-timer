@@ -1,4 +1,5 @@
 'use client';
+import { TimerType } from '@/types/timerType';
 
 const RADIUS = 160;
 const CIRCUMFERENCE = 2 * RADIUS * Math.PI;
@@ -14,7 +15,7 @@ const STROKE_FOREGROUND = BLUE_100;
 const STROKE_WIDTH = 8;
 
 interface TimerDisplayProps {
-  isWork: boolean;
+  timerType: TimerType;
   timeLeft: number;
   initialTime: number;
   sessionCount?: number;
@@ -30,7 +31,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ isWork, timeLeft, initialTime, sessionCount }: TimerDisplayProps) {
+export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -40,12 +41,28 @@ export function TimerDisplay({ isWork, timeLeft, initialTime, sessionCount }: Ti
 
   const { minutes, seconds } = formatTime(timeLeft);
 
+  let timerTitle: string;
+  switch(timerType) {
+    case 'work':
+      timerTitle = 'focus time';
+      break;
+    case 'break':
+      timerTitle = 'break time';
+      break;
+    case 'long-break':
+      timerTitle = 'long break time';
+      break;
+    default:
+      timerTitle = 'focus time';
+      break;
+  }
+
   return (
     <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative">
       <div className="absolute top-4 text-3xl">
-        {isWork ? 'focus time' : 'break time'}
+        {timerTitle}
       </div>
-      {isWork && sessionCount && (
+      {timerTitle === 'focus time' && sessionCount && (
         <div className="absolute top-16 text-lg opacity-80">
           {sessionCount}/4 ポモドーロ
         </div>

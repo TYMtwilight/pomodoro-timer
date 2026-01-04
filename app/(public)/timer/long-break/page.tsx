@@ -19,8 +19,8 @@ export default function LongBreakTimerPage() {
   console.log(timerType);
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-      <TimerDisplay isWork={false} timeLeft={timeLeft} initialTime={INITIAL_TIME} />
-      <TimerControls isWork={false} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} />
+      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
     </div>
   );
 }

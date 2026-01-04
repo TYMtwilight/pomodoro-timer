@@ -18,6 +18,22 @@ export default function CompletionPage() {
   // 完了メッセージを取得
   const { completionTitle, nextTimerMessage, nextTimerTitle } = getCompletionMessages(timerType, sessionCount);
 
+  let startLabel: string;
+  switch(nextTimerType) {
+    case 'work':
+      startLabel = '作業を開始する';
+      break;
+    case 'break':
+      startLabel = '休憩を開始する';
+      break;
+    case 'long-break':
+      startLabel = '長い休憩を開始する';
+      break;
+    default:
+      startLabel = '開始する';
+      break;
+  }
+
   const handleStartNextTimer = () => {
     // work完了時はセッションをインクリメント
     if (timerType === 'work') {
@@ -27,7 +43,6 @@ export default function CompletionPage() {
     else if (timerType === 'long-break') {
       resetSession();
     }
-
     router.push(`/timer/${nextTimerType}?autoStart=true`);
   };
 
@@ -50,7 +65,7 @@ export default function CompletionPage() {
       </div>
 
       <div className="flex flex-col justify-end items-center w-full max-w-3xl gap-2">
-        <label htmlFor="startBreak">開始する</label>
+        <label htmlFor="startBreak" className="text-sm">{startLabel}</label>
         <Button
           id="startBreak"
           onClick={handleStartNextTimer}
