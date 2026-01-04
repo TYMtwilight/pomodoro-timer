@@ -49,7 +49,7 @@ export function getCompletionMessages(timerType: TimerType, sessionCount: number
   switch (timerType) {
     case 'work':
       completionTitle = 'work complete';
-      if(sessionCount > 4) {
+      if(sessionCount === 4) {
         nextTimerMessage = 'お疲れ様です。15分間の長い休憩を取りましょう。';
         nextTimerTitle = '15分間の長い休憩';
       } else {
