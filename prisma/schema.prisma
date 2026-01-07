@@ -100,9 +100,9 @@ model Task {
 // タイマー設定
 model Setting {
   userId                    String   @id @map("user_id")
-  focusDuration             Int      @default(25) @map("focus_duration") // 分
-  shortBreak                Int      @default(5) @map("short_break") // 分
-  longBreak                 Int      @default(15) @map("long_break") // 分
+  focusTime                 Int      @default(25) @map("focus_duration") // 分
+  breakTime                 Int      @default(5) @map("short_break") // 分
+  longBreakTime             Int      @default(15) @map("long_break") // 分
   pomodorosUntilLongBreak   Int      @default(4) @map("pomodoros_until_long_break")
   createdAt                 DateTime @default(now()) @map("created_at")
   updatedAt                 DateTime @updatedAt @map("updated_at")
