@@ -1,11 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Settings } from 'lucide-react';
 import { UserInfo } from './UserInfo';
 import { LoginButton } from './LoginButton';
+import { Button } from '@/components/ui/button';
+import { SettingsModal } from '@/components/settings/SettingsMordal';
 
 export function Header() {
   const { data: session, status } = useSession();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   /**
   * 認証状態に応じた表示コンテンツを返す
@@ -29,18 +34,39 @@ export function Header() {
   };
 
   return (
-    <header className="border-b border-neutral-800 bg-black">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* ロゴ・タイトル */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-white">Pomodoro Timer</h1>
-        </div>
+    <>
+      <header className="border-b border-neutral-800 bg-black">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          {/* ロゴ・タイトル */}
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-white">Pomodoro Timer</h1>
+          </div>
 
-        {/* ログイン状態の表示 */}
-        <div className="flex items-center gap-4">
-          {renderAuthContent()}
+          {/* 右側のコンテンツ */}
+          <div className="flex items-center gap-4">
+            {/* 設定ボタン（ログイン状態のみ表示） */}
+            {status === 'authenticated' && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSettingsOpen(true)}
+                className="text-neutral-400 hover:text-white"
+              >
+                <Settings className="h-8 w-8" />
+                <span className="sr-only">設定</span>
+              </Button>
+            )}
+          
+            {/* ログイン状態の表示 */}
+            {renderAuthContent()}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {/* 設定モーダル */}
+      <SettingsModal
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
+      />
+    </>
   );
 }
