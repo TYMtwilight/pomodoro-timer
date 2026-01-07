@@ -10,7 +10,7 @@ export function LoginButton() {
       onClick={() => signIn('google')}
       variant="default"
       size="sm"
-      className="gap-2"
+      className="gap-2 text-neutral-400 hover:text-white"
     >
       <LogIn className="h-4 w-4" />
       ログイン

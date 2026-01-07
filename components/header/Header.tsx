@@ -43,16 +43,17 @@ export function Header() {
           </div>
 
           {/* 右側のコンテンツ */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-between gap-4">
             {/* 設定ボタン（ログイン状態のみ表示） */}
             {status === 'authenticated' && (
               <Button
-                variant="ghost"
-                size="icon"
                 onClick={() => setIsSettingsOpen(true)}
-                className="text-neutral-400 hover:text-white"
+                variant="default"
+                size="icon"
+                className="text-neutral-400 hover:text-white rounded-full"
               >
-                <Settings className="h-8 w-8" />
+                <Settings className="size-5 "/>
+                
                 <span className="sr-only">設定</span>
               </Button>
             )}

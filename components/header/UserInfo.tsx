@@ -28,18 +28,17 @@ export function UserInfo({ user }: UserInfoProps) {
             className="h-8 w-8 rounded-full"
           />
         )}
-        <span className="text-sm text-white">{user.name}</span>
       </div>
 
       {/* ログアウトボタン */}
       <Button
         onClick={() => signOut()}
-        variant="outline"
+        variant="default"
         size="sm"
-        className="gap-2"
+        className="gap-2 text-neutral-400 hover:text-white"
       >
         <LogOut className="h-4 w-4" />
-        ログアウト
+        <span className="text-sm">ログアウト</span>
       </Button>
     </div>
   );

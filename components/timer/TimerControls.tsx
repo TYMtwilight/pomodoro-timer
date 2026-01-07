@@ -48,7 +48,7 @@ export const TimerControls = memo(function TimerControls({
           <Button
             onClick={onToggle}
             size="lg"
-            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg text-neutral-400 hover:text-white"
           >
             {isRunning ? (
               <Pause id="stopWork" className="w-8 h-8" />
@@ -62,7 +62,7 @@ export const TimerControls = memo(function TimerControls({
           <Button
             onClick={onReset}
             size="lg"
-            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg text-neutral-400 hover:text-white"
           >
             <RotateCcw id="resetTimer" className="w-8 h-8" />
           </Button>
