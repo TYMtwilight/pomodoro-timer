@@ -7,7 +7,7 @@ import { z } from 'zod';
  * - 長い休憩: 1-60分
  * - 長い休憩までのポモドーロ数: 2-8回
  */
-export const settingSchema = z.object({
+export const settingsSchema = z.object({
   focusTime: z.number().int()
     .min(1, 'う～ん、1分未満はちょっと短すぎませんか？')
     .max(90, 'あっ！90分超えるのはやりすぎですよ！'),
@@ -26,7 +26,7 @@ export const settingSchema = z.object({
  * 設定データの型定義
  * settingsSchemaから自動的に型を生成
  */
-export type Settings = z.infer<typeof settingSchema>;
+export type Settings = z.infer<typeof settingsSchema>;
 
 /**
  * デフォルトの設定値
