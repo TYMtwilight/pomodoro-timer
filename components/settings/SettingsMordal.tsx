@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSettings } from '@/contexts/SettingsContsxt';
 import { DEFAULT_SETTINGS, type Settings } from '@/types/settings';
 import {
@@ -36,13 +36,20 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
 
   /**
    * モーダルが開かれたときに最新の設定を反映
+   * useEffectを使用して、openがtrueになった時に最新のsettingsを反映
    */
-  const handleOpenChange = (isOpen: boolean) => {
-    if (isOpen) {
-      // モーダルを開く時：現在の設定をフォームに反映
+  useEffect(() => {
+    if (open) {
+      // モーダルが開かれた時：最新の設定をフォームに反映
       setFormData(settings);
       setError(null);
     }
+  }, [open, settings]);
+
+  /**
+   * モーダルの開閉状態を親コンポーネントに通知
+   */
+  const handleOpenChange = (isOpen: boolean) => {
     onOpenChange(isOpen);
   };
 
