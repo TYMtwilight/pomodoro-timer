@@ -12,8 +12,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface SettingsModalProps {
   open: boolean;
@@ -41,14 +47,11 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
   };
 
   /**
-   * フォームフィールドの変更ハンドラー
+   * Selectフィールドの変更ハンドラー
    */
-  const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleSelectChange = (field: keyof Settings, value: string) => {
     const numValue = parseInt(value, 10);
-    if (!isNaN(numValue)) {
-      setFormData({ ...formData, [name]: numValue });
-    }
+    setFormData({ ...formData, [field]: numValue });
   };
 
   /**
@@ -80,6 +83,30 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
     }
   };
 
+  // 作業時間の選択肢（5分刻み 5～90分）
+  const focusTimeOptions: number[] = [];
+  for (let i = 5; i <= 90; i += 5) {
+    focusTimeOptions.push(i);
+  }
+
+  // 短い休憩の選択肢（5分刻み 5～30分）
+  const breakTimeOptions: number[] = [];
+  for (let i = 5; i <= 30; i += 5) {
+    breakTimeOptions.push(i);
+  }
+
+  // 長い休憩の選択肢（5分刻み 5～60分）
+  const longBreakTimeOptions: number[] = [];
+  for (let i = 5; i <= 60; i += 5) {
+    longBreakTimeOptions.push(i);
+  }
+
+  // ポモドーロ数の選択肢（2～8回）
+  const pomodorosOptions: number[] = [];
+  for (let i = 2; i <= 8; i++) {
+    pomodorosOptions.push(i);
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -97,17 +124,21 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
               作業時間
             </Label>
             <div className="col-span-3 flex items-center gap-2">
-              <Input
-                id="focusTime"
-                name="focusTime"
-                type="number"
-                min="1"
-                max="90"
-                value={formData.focusTime}
-                onChange={handleFieldChange}
-                className="flex-1"
-              />
-              <span className="text-sm text-muted-foreground">分</span>
+              <Select 
+                value={formData.focusTime.toString()}
+                onValueChange={(value) => handleSelectChange('focusTime', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="選択してください" />
+                </SelectTrigger>
+                <SelectContent>
+                  {focusTimeOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}分
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -117,17 +148,21 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
               短い休憩
             </Label>
             <div className="col-span-3 flex items-center gap-2">
-              <Input
-                id="breakTime"
-                name="breakTime"
-                type="number"
-                min="1"
-                max="30"
-                value={formData.breakTime}
-                onChange={handleFieldChange}
-                className="flex-1"
-              />
-              <span className="text-sm text-muted-foreground">分</span>
+              <Select
+                value={formData.breakTime.toString()}
+                onValueChange={(value) => handleSelectChange('breakTime', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="選択してください" />
+                </SelectTrigger>
+                <SelectContent>
+                  {breakTimeOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}分
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -137,17 +172,21 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
               長い休憩
             </Label>
             <div className="col-span-3 flex items-center gap-2">
-              <Input
-                id="longBreakTime"
-                name="longBreakTime"
-                type="number"
-                min="1"
-                max="60"
-                value={formData.longBreakTime}
-                onChange={handleFieldChange}
-                className="flex-1"
-              />
-              <span className="text-sm text-muted-foreground">分</span>
+              <Select
+                value={formData.longBreakTime.toString()}
+                onValueChange={(value) => handleSelectChange('longBreakTime', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="選択してください" />
+                </SelectTrigger>
+                <SelectContent>
+                  {longBreakTimeOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}分
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -157,17 +196,21 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
               ポモドーロ数
             </Label>
             <div className="col-span-3 flex items-center gap-2">
-              <Input
-                id="pomodorosUntilLongBreak"
-                name="pomodorosUntilLongBreak"
-                type="number"
-                min="2"
-                max="8"
-                value={formData.pomodorosUntilLongBreak}
-                onChange={handleFieldChange}
-                className="flex-1"
-              />
-              <span className="text-sm text-muted-foreground">回</span>
+              <Select
+                value={formData.pomodorosUntilLongBreak.toString()}
+                onValueChange={(value) => handleSelectChange('pomodorosUntilLongBreak', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="選択してください" />
+                </SelectTrigger>
+                <SelectContent>
+                  {pomodorosOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}回
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
