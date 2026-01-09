@@ -120,7 +120,7 @@ model Record {
   taskId      String?  @map("task_id") // nullable（「項目なし」の場合）
   startTime   DateTime @map("start_time")
   endTime     DateTime @map("end_time")
-  duration    Int      // 作業時間（秒）
+  duration    Int      // 作業時間（分）
   createdAt   DateTime @default(now()) @map("created_at")
 
   // リレーション
