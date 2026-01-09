@@ -188,9 +188,9 @@
 
 ## 4. 画面構成
 
-### 4.1 メイン画面（タイマー画面）
+### 4.1 メイン画面（タイマー画面 & 記録確認画面）
 
-![image.png](image.png)
+![image (2).png](image_(2).png)
 
 ### 4.2 設定画面（モーダル）
 
@@ -398,11 +398,11 @@ pomodoro-timer/
 
 ### システム全体構成図
 
-![image.png](image%201.png)
+![image.png](image.png)
 
 ### Server Actionsエンドポイント構成
 
-![image.png](image%202.png)
+![image.png](image%201.png)
 
 ## 7. Phase 1で実装しない機能
 
