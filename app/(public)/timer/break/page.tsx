@@ -4,20 +4,21 @@ import { useSearchParams } from 'next/navigation';
 import { useTimer } from '@/components/timer/useTimer';
 import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
-import { useSession } from '@/contexts/SessionContext';
 import { TimerType } from '@/types/timerType';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const SECONDS = 60;
-const BREAK_MINUTES = 1;
-const INITIAL_TIME = SECONDS * BREAK_MINUTES;
 const timerType: TimerType = 'break';
 
 export default function BreakTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
-  const { sessionCount } = useSession();
   
-  const { timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
+  // 設定から短い休憩時間を取得
+  const { settings } = useSettings();
+  const INITIAL_TIME = SECONDS * settings.breakTime;
+
+  const {sessionCount, timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">

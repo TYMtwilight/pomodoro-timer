@@ -17,6 +17,7 @@ export function useTimer(
   const router = useRouter();
   // セッション数を管理する
   const { sessionCount,} = useSession();
+
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
     setIsRunning((prev) => !prev);
@@ -27,6 +28,15 @@ export function useTimer(
     setTimeLeft(initialTime);
   }, [initialTime]);
 
+  /**
+   * initialTimeが変更されたら、停止中のタイマーをリセット
+   */
+  useEffect(() => {
+    if (!isRunning) {
+      setTimeLeft(initialTime);
+    }
+  }, [initialTime, isRunning]);
+   
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
     switch(timerType) {

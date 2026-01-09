@@ -5,15 +5,17 @@ import { useTimer } from '@/components/timer/useTimer';
 import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
+import { useSettings } from '@/contexts/SettingsContext';
 
 const SECONDS = 60;
-const FOCUS_MINUTES = 1;
-const INITIAL_TIME = SECONDS * FOCUS_MINUTES;
+const timerType: TimerType = 'focus';
 
 export default function WorkTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
-  const timerType: TimerType = 'focus';
+  
+  const { settings } = useSettings();
+  const INITIAL_TIME = SECONDS * settings.focusTime;
 
   const {sessionCount, timeLeft, isRunning, toggleTimer, resetTimer} = useTimer(timerType, INITIAL_TIME, autoStart);
 
