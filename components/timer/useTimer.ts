@@ -16,7 +16,7 @@ export function useTimer(
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   // セッション数を管理する
-  const { sessionCount,} = useSession();
+  const { sessionCount, maxSessions } = useSession();
 
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
@@ -29,11 +29,12 @@ export function useTimer(
   }, [initialTime]);
 
   /**
-   * initialTimeが変更されたら、停止中のタイマーをリセット
+   * initialTime、sessionCountが変更されたら、停止中のタイマーをリセット
    */
   useEffect(() => {
     if (!isRunning) {
       setTimeLeft(initialTime);
+      
     }
   }, [initialTime, isRunning]);
    
@@ -87,6 +88,7 @@ export function useTimer(
 
   return {
     sessionCount,
+    maxSessions,
     timeLeft,
     isRunning,
     toggleTimer,

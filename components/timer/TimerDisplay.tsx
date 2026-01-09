@@ -19,6 +19,7 @@ interface TimerDisplayProps {
   timeLeft: number;
   initialTime: number;
   sessionCount?: number;
+  maxSessions?: number;
 }
 
 // 画面に表示する時間をフォーマットする
@@ -31,7 +32,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount }: TimerDisplayProps) {
+export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, maxSessions }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -62,9 +63,9 @@ export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount }:
       <div className="absolute top-4 text-3xl">
         {timerTitle}
       </div>
-      {timerTitle === 'focus time' && sessionCount && (
+      {timerTitle === 'focus time' && sessionCount && maxSessions && (
         <div className="absolute top-16 text-lg opacity-80">
-          {sessionCount}/4 ポモドーロ
+          {sessionCount}/{maxSessions} ポモドーロ
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center">
