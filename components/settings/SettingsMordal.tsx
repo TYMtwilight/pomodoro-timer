@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSettings } from '@/contexts/SettingsContsxt';
+import { useSettings } from '@/contexts/SettingsContext';
 import { DEFAULT_SETTINGS, type Settings } from '@/types/settings';
 import {
   Dialog,
