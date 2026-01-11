@@ -11,7 +11,7 @@ export interface CreateRecordInput {
 /**
  * 作業記録取得時のオプション型
  */
-export interface GetRecorsOptions {
+export interface GetRecordsOptions {
   from?: Date;    // 開始日時
   to?: Date;      // 終了日時
   limit?: number; // 取得件数の上限
@@ -39,3 +39,60 @@ export interface RecordWithTask extends Record {
     name: string;
   } | null;
 }
+
+/**
+ * 日別の作業統計
+ */
+export interface DailyStats {
+  date: string;  // YYYY-MM-DD
+  totalMinutes: number;
+  recordCount: number;
+}
+
+/**
+ * 月別の作業統計（年単位表示用）
+ */
+export interface MonthlyStats {
+  month: string;  // YYYY-MM
+  totalMinutes: number;
+  recordCOunt: number;
+}
+
+/**
+ * 週単位の統計データ
+ */
+export interface WeeklyStats {
+  weekStart: Date;
+  weekEnd: Date;
+  totalMinutes: number;
+  dailyStats: DailyStats[];
+}
+
+/**
+ * 月単位の統計データ
+ */
+export interface MonthlyStatsDetail {
+  monthStart: Date;
+  monthEnd: Date;
+  totalMinutes: number;
+  dailyStats: DailyStats[];
+}
+
+/**
+ * 年単位の統計データ
+ */
+export interface YearlyStats {
+  yearStart: Date;
+  yearEnd: Date;
+  totalMinutes: number;
+  monthlyStats: MonthlyStats[];
+}
+
+/**
+ * 期間別統計の共通型
+ */
+export type PeriodStats = {
+  period: 'week' | 'month' | 'year';
+  totalMinutes: number;
+  stats: DailyStats[] | MonthlyStats[];
+};
