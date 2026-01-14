@@ -2,42 +2,68 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
 import { TimerType } from '@/types/timerType';
+import { createRecord } from '@/app/actions/records';
 
-export function useTimer(
+export const useTimer = (
   timerType: TimerType,
   initialTime: number,
-  autoStart: boolean
-) {
+  autoStart: boolean = false
+) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
   const [isRunning, setIsRunning] = useState(autoStart);
+
+  // タイマー開始時刻を記録（作業記録用）
+  const startTimeRef = useRef<Date | null>(null);
+
   // setIntervalのIDを保存するためのRef
   // useRefを使う理由：再レンダリングを引き起こさず、コンポーネントのライフサイクル全体で同じ値を保持できるため
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
-  // セッション数を管理する
   const { sessionCount, maxSessions } = useSession();
 
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
-    setIsRunning((prev) => !prev);
+    setIsRunning((prev) => {
+      const newState = !prev;
+
+      // タイマー開始時に現在時刻を記録（初回のみ）
+      // 一時停止→再開の場合は記録しない
+      if (newState && !startTimeRef.current) {
+        startTimeRef.current = new Date();
+      }
+
+      return newState;
+    });
   }, []);
 
   const resetTimer = useCallback(() => {
     setIsRunning(false);
     setTimeLeft(initialTime);
+
+    // リセット時は開始時刻もクリア
+    startTimeRef.current = null;
   }, [initialTime]);
 
   /**
-   * initialTime、sessionCountが変更されたら、停止中のタイマーをリセット
+   * autoStart=true の場合、初回マウント時に開始時刻を記録
+   */
+  useEffect(() => {
+    if (autoStart && !startTimeRef.current) {
+      startTimeRef.current = new Date();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * initialTimeが変更されたら、停止中のタイマーをリセット
    */
   useEffect(() => {
     if (!isRunning) {
       setTimeLeft(initialTime);
-      
     }
   }, [initialTime, isRunning]);
-   
+  
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
     switch(timerType) {
@@ -67,15 +93,48 @@ export function useTimer(
     } else if (isRunning && timeLeft === 0) {
       setIsRunning(false);
 
-      // タイマー完了時、completionページに遷移
-      setTimeout(() => {
-        router.push(`/timer/completion?timerType=${timerType}`);
-      }, 1000);
-
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
+
+      // タイマー完了時の処理
+      const handleTimerComplete = async () => {
+        // focusタイマーの場合のみ作業記録を保存
+        if (timerType === 'focus' && startTimeRef.current) {
+          const endTime = new Date();
+          const durationMinutes = Math.floor(initialTime / 60);
+
+          try {
+            await createRecord({
+              startTime: startTimeRef.current,
+              endTime: endTime,
+              duration: durationMinutes,
+              taskId: null,
+            });
+            console.log('作業記録を保存しました');
+          } catch (error) {
+            console.error('作業記録の保存に失敗：', error);
+          } finally {
+            // 開始時刻をクリア
+            startTimeRef.current = null;
+          }
+
+        }
+      };
+
+      // 非同期処理を実行してから遷移
+      handleTimerComplete().then(() => {
+        setTimeout(() => {
+          router.push(`/timer/completion?timerType=${timerType}`);
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error('予期しないエラー', error);
+        setTimeout(() => {
+          router.push(`/timer/completion?timerType=${timerType}`)
+        }, 1000);
+      })
     }
 
     return () => {
@@ -91,6 +150,7 @@ export function useTimer(
     maxSessions,
     timeLeft,
     isRunning,
+    startTimeRef,
     toggleTimer,
     resetTimer,
   };
