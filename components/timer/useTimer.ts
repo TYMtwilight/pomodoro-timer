@@ -55,15 +55,6 @@ export const useTimer = (
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /**
-   * initialTimeが変更されたら、停止中のタイマーをリセット
-   */
-  useEffect(() => {
-    if (!isRunning) {
-      setTimeLeft(initialTime);
-    }
-  }, [initialTime, isRunning]);
-  
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
     switch(timerType) {
