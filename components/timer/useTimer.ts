@@ -7,7 +7,8 @@ import { createRecord } from '@/app/actions/records';
 export const useTimer = (
   timerType: TimerType,
   initialTime: number,
-  autoStart: boolean = false
+  autoStart: boolean = false,
+  taskId: string | null = null
 ) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
@@ -52,12 +53,12 @@ export const useTimer = (
     if (autoStart && !startTimeRef.current) {
       startTimeRef.current = new Date();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
-    switch(timerType) {
+    switch (timerType) {
       case 'focus':
         router.replace('/timer/focus');
         break;
@@ -71,8 +72,8 @@ export const useTimer = (
         router.replace('/timer/focus');
         break;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -101,31 +102,31 @@ export const useTimer = (
               startTime: startTimeRef.current,
               endTime: endTime,
               duration: durationMinutes,
-              taskId: null,
+              taskId: taskId,
             });
-            console.log('作業記録を保存しました');
+            console.log('作業記録を保存しました（taskId:', taskId, ')');
           } catch (error) {
             console.error('作業記録の保存に失敗：', error);
           } finally {
             // 開始時刻をクリア
             startTimeRef.current = null;
           }
-
         }
       };
 
       // 非同期処理を実行してから遷移
-      handleTimerComplete().then(() => {
-        setTimeout(() => {
-          router.push(`/timer/completion?timerType=${timerType}`);
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error('予期しないエラー', error);
-        setTimeout(() => {
-          router.push(`/timer/completion?timerType=${timerType}`)
-        }, 1000);
-      })
+      handleTimerComplete()
+        .then(() => {
+          setTimeout(() => {
+            router.push(`/timer/completion?timerType=${timerType}`);
+          }, 1000);
+        })
+        .catch((error) => {
+          console.error('予期しないエラー', error);
+          setTimeout(() => {
+            router.push(`/timer/completion?timerType=${timerType}`);
+          }, 1000);
+        });
     }
 
     return () => {
@@ -133,7 +134,7 @@ export const useTimer = (
         clearInterval(intervalRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRunning, timeLeft, timerType]);
 
   return {
@@ -145,4 +146,4 @@ export const useTimer = (
     toggleTimer,
     resetTimer,
   };
-}
+};
