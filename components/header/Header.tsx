@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Settings } from 'lucide-react';
+import { Settings, ListTodo } from 'lucide-react';
 import { UserInfo } from './UserInfo';
 import { LoginButton } from './LoginButton';
 import { Button } from '@/components/ui/button';
 import { SettingsModal } from '@/components/settings/SettingsMordal';
+import { TasksModal } from '@/components/tasks';
 
 export function Header() {
   const { data: session, status } = useSession();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isTasksOpen, setIsTasksOpen] = useState(false);
 
   /**
   * 認証状態に応じた表示コンテンツを返す
@@ -44,18 +46,31 @@ export function Header() {
 
           {/* 右側のコンテンツ */}
           <div className="flex items-between gap-4">
-            {/* 設定ボタン（ログイン状態のみ表示） */}
+            {/* ログイン状態のみ表示されるボタン */}
             {status === 'authenticated' && (
-              <Button
-                onClick={() => setIsSettingsOpen(true)}
-                variant="default"
-                size="icon"
-                className="text-neutral-400 hover:text-white rounded-full"
-              >
-                <Settings className="size-5 "/>
-                
-                <span className="sr-only">設定</span>
-              </Button>
+              <>
+                {/* 作業項目管理ボタン */}
+                <Button
+                  onClick={() => setIsTasksOpen(true)}
+                  variant="default"
+                  size="icon"
+                  className="text-neutral-400 hover:text-white rounded-full"
+                >
+                  <ListTodo className="size-5" />
+                  <span className="sr-only">作業項目管理</span>
+                </Button>
+
+                {/* 設定ボタン */}
+                <Button
+                  onClick={() => setIsSettingsOpen(true)}
+                  variant="default"
+                  size="icon"
+                  className="text-neutral-400 hover:text-white rounded-full"
+                >
+                  <Settings className="size-5" />
+                  <span className="sr-only">設定</span>
+                </Button>
+              </>
             )}
           
             {/* ログイン状態の表示 */}
@@ -63,6 +78,13 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      {/* 作業項目管理モーダル */}
+      <TasksModal
+        open={isTasksOpen}
+        onOpenChange={setIsTasksOpen}
+      />
+
       {/* 設定モーダル */}
       <SettingsModal
         open={isSettingsOpen}
