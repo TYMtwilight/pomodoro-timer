@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
+import { useNotificationSound } from '@/hooks/useNotificationSound';
 
 export const useTimer = (
   timerType: TimerType,
@@ -22,6 +23,7 @@ export const useTimer = (
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const { sessionCount, maxSessions } = useSession();
+  const { playNotificationSound } = useNotificationSound();
 
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
@@ -92,6 +94,9 @@ export const useTimer = (
 
       // タイマー完了時の処理
       const handleTimerComplete = async () => {
+        // 通知音を再生し、再生完了を待つ
+        await playNotificationSound();
+
         // focusタイマーの場合のみ作業記録を保存
         if (timerType === 'focus' && startTimeRef.current) {
           const endTime = new Date();
@@ -117,15 +122,11 @@ export const useTimer = (
       // 非同期処理を実行してから遷移
       handleTimerComplete()
         .then(() => {
-          setTimeout(() => {
-            router.push(`/timer/completion?timerType=${timerType}`);
-          }, 1000);
+          router.push(`/timer/completion?timerType=${timerType}`);
         })
         .catch((error) => {
           console.error('予期しないエラー', error);
-          setTimeout(() => {
-            router.push(`/timer/completion?timerType=${timerType}`);
-          }, 1000);
+          router.push(`/timer/completion?timerType=${timerType}`);
         });
     }
 
