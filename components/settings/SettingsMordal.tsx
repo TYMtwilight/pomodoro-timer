@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 
 interface SettingsModalProps {
   open: boolean;
@@ -218,6 +219,23 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+
+          {/* 音声通知 */}
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="soundEnabled" className="text-right">
+              通知音
+            </Label>
+            <div className="col-span-3 flex items-center gap-2">
+              <Switch
+                id="soundEnabled"
+                checked={formData.soundEnabled}
+                onCheckedChange={(checked) => setFormData({ ...formData, soundEnabled: checked })}
+              />
+              <span className="text-sm text-muted-foreground">
+                {formData.soundEnabled ? 'ON' : 'OFF'}
+              </span>
             </div>
           </div>
         </div>
