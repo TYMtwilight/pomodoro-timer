@@ -1,5 +1,8 @@
 'use client';
 import { TimerType } from '@/types/timerType';
+import { Orbitron } from 'next/font/google';
+
+const orbitron = Orbitron({ subsets: ['latin'], weight: '400' });
 
 const RADIUS = 160;
 const CIRCUMFERENCE = 2 * RADIUS * Math.PI;
@@ -69,23 +72,25 @@ export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, m
         </div>
       )}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span
-          className="text-6xl text-white tabular-nums"
-          style={{
-            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
-          }}
-        >
-          {minutes}
-        </span>
-        <span className="text-4xl text-white tabular-nums mx-2">:</span>
-        <span
-          className="text-6xl text-white tabular-nums"
-          style={{
-            textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
-          }}
-        >
-          {seconds}
-        </span>
+        <div className={orbitron.className}>
+          <span
+            className="text-6xl text-white tabular-nums"
+            style={{
+              textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+            }}
+          >
+            {minutes}
+          </span>
+          <span className="text-4xl text-white tabular-nums mx-2">:</span>
+          <span
+            className="text-6xl text-white tabular-nums"
+            style={{
+              textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+            }}
+          >
+            {seconds}
+          </span>
+        </div>
       </div>
       <svg width="480" height="480" className="transform -rotate-90">
         <circle
