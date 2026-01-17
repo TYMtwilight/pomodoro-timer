@@ -41,6 +41,7 @@ export async function getSettings(): Promise<Settings | null> {
     breakTime: userSettings.breakTime,
     longBreakTime: userSettings.longBreakTime,
     pomodorosUntilLongBreak: userSettings.pomodorosUntilLongBreak,
+    soundEnabled: userSettings.soundEnabled,
   };
 }
 
@@ -84,6 +85,7 @@ export async function saveSettings(settings: Settings): Promise<{
         breakTime: settings.breakTime,
         longBreakTime: settings.longBreakTime,
         pomodorosUntilLongBreak: settings.pomodorosUntilLongBreak,
+        soundEnabled: settings.soundEnabled,
       },
       create: {
         userId: session.user.id,
@@ -91,6 +93,7 @@ export async function saveSettings(settings: Settings): Promise<{
         breakTime: settings.breakTime,
         longBreakTime: settings.longBreakTime,
         pomodorosUntilLongBreak: settings.pomodorosUntilLongBreak,
+        soundEnabled: settings.soundEnabled,
       },
     });
 

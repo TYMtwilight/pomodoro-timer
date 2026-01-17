@@ -104,6 +104,7 @@ model Setting {
   breakTime                 Int      @default(5) @map("short_break") // 分
   longBreakTime             Int      @default(15) @map("long_break") // 分
   pomodorosUntilLongBreak   Int      @default(4) @map("pomodoros_until_long_break")
+  soundEnabled              Boolean  @default(true) @map("sound_enabled") // 音声通知ON/OFF
   createdAt                 DateTime @default(now()) @map("created_at")
   updatedAt                 DateTime @updatedAt @map("updated_at")
 
