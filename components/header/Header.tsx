@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { User, LogOut, ArrowLeft } from 'lucide-react';
@@ -8,15 +7,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { LoginButton } from './LoginButton';
 import { Button } from '@/components/ui/button';
-import { SettingsModal } from '@/components/settings/SettingsMordal';
-import { TasksModal } from '@/components/tasks';
+
 
 export function Header() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isTasksOpen, setIsTasksOpen] = useState(false);
 
   // 記録画面にいるかどうか
   const isRecordsPage = pathname === '/records';
@@ -117,17 +113,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* 作業項目管理モーダル */}
-      <TasksModal
-        open={isTasksOpen}
-        onOpenChange={setIsTasksOpen}
-      />
 
-      {/* 設定モーダル */}
-      <SettingsModal
-        open={isSettingsOpen}
-        onOpenChange={setIsSettingsOpen}
-      />
     </>
   );
 }
