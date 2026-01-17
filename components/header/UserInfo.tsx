@@ -4,6 +4,7 @@ import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 
 interface UserInfoProps {
@@ -17,18 +18,22 @@ interface UserInfoProps {
 export function UserInfo({ user }: UserInfoProps) {
   return (
     <div className="flex items-center gap-4">
-      {/* ユーザー情報 */}
-      <div className="flex items-center gap-2">
+      {/* ユーザー情報（クリックで作業記録ページへ） */}
+      <Link
+        href="/records"
+        className="flex items-center gap-2 transition-opacity hover:opacity-80"
+        title="作業記録を見る"
+      >
         {user.image && (
           <Image
             src={user.image}
             alt={user.name || 'User'}
             width={32}
             height={32}
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 rounded-full ring-2 ring-transparent hover:ring-blue-500 transition-all"
           />
         )}
-      </div>
+      </Link>
 
       {/* ログアウトボタン */}
       <Button

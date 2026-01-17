@@ -1,6 +1,7 @@
 import { getRecords } from '@/app/actions/records';
 import type { RecordWithTask } from '@/types/record';
 import Link from 'next/link';
+import { startOfDay, endOfDay } from 'date-fns';
 
 const formatDate = (date: Date) => {
   const d = new Date(date);
@@ -19,7 +20,32 @@ const formatTime = (date: Date) => {
   });
 };
 
+/**
+ * 総作業時間を時間と分の形式にフォーマット
+ */
+const formatTotalDuration = (totalMinutes: number): string => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  
+  if (hours > 0) {
+    return `${hours}時間${minutes}分`;
+  }
+  return `${minutes}分`;
+};
+
 export default async function RecordsPage() {
+  // 本日の日付範囲を計算
+  const today = new Date();
+  const todayStart = startOfDay(today);
+  const todayEnd = endOfDay(today);
+
+  // 本日の記録を取得（サマリー用）
+  const todayResult = await getRecords({
+    from: todayStart,
+    to: todayEnd,
+  });
+
+  // 最新20件の記録を取得（一覧表示用）
   const result = await getRecords({ limit: 20 });
 
   if (!result.success) {
@@ -31,11 +57,30 @@ export default async function RecordsPage() {
   }
 
   const records: RecordWithTask[] | undefined = result.records || [];
+  const todayRecords: RecordWithTask[] = todayResult.success ? (todayResult.records || []) : [];
+  
+  // 本日の総作業時間を計算（分単位）
+  const todayTotalMinutes = todayRecords.reduce((sum, record) => sum + record.duration, 0);
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">作業記録</h1>
+
+        {/* 本日のサマリー */}
+        <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 mb-8 border border-blue-800/50">
+          <h2 className="text-lg font-medium text-gray-300 mb-2">本日のサマリー</h2>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold text-white">
+              {formatTotalDuration(todayTotalMinutes)}
+            </span>
+            <span className="text-gray-400">
+              （{todayRecords.length}回のポモドーロ）
+            </span>
+          </div>
+        </div>
+
+        <h2 className="text-xl font-semibold mb-4 text-gray-300">最近の記録</h2>
 
         {records.length === 0 ? (
           <p className="text-gray-400">まだ作業記録がありません</p>
