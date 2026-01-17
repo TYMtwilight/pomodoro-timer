@@ -124,7 +124,6 @@
 ### 2.5.2 保存タイミング
 
 - ポモドーロ（作業時間）完了時に自動保存
-- 一時停止 → リセット時も経過時間を保存
 
 ---
 
@@ -259,7 +258,7 @@ Users ──< Tasks
 | task_id | string | FK, nullable | 作業項目ID |
 | start_time | timestamp | not null | 開始時刻 |
 | end_time | timestamp | not null | 終了時刻 |
-| duration | integer | not null | 作業時間（秒） |
+| duration | integer | not null | 作業時間（分） |
 | created_at | timestamp | not null | 作成日時 |
 
 ---
