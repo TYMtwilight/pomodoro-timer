@@ -41,6 +41,21 @@ export async function createTask(input: CreateTaskInput): Promise<{
   }
 
   try {
+    // タスク数の上限チェック（5個まで）
+    const currentTaskCount = await prisma.task.count({
+      where: {
+        userId: session.user.id,
+        deletedAt: null,
+      },
+    });
+
+    if (currentTaskCount >= 5) {
+      return {
+        success: false,
+        error: '作業項目は5個まで登録できます',
+      };
+    }
+
     const task = await prisma.task.create({
       data: {
         userId: session.user.id,
