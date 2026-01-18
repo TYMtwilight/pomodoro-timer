@@ -18,12 +18,18 @@ export default function LongBreakTimerPage() {
   const { settings } = useSettings();
   const INITIAL_TIME = SECONDS * settings.longBreakTime;
 
-  const { maxSessions, timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
-  console.log(timerType);
+  const { maxSessions, timeLeft, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
       <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} maxSessions={maxSessions} />
-      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+
+      <TimerControls
+        isRunning={isRunning}
+        hasStarted={hasStarted}
+        onToggle={toggleTimer}
+        onReset={resetTimer}
+      />
     </div>
   );
 }

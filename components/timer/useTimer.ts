@@ -14,6 +14,8 @@ export const useTimer = (
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
   const [isRunning, setIsRunning] = useState(autoStart);
+  // 一度でもタイマーが開始されたかどうか（SETTINGS/RESET切り替え用）
+  const [hasStarted, setHasStarted] = useState(autoStart);
 
   // タイマー開始時刻を記録（作業記録用）
   const startTimeRef = useRef<Date | null>(null);
@@ -36,6 +38,11 @@ export const useTimer = (
         startTimeRef.current = new Date();
       }
 
+      // 一度でも開始したらhasStartedをtrueに
+      if (newState) {
+        setHasStarted(true);
+      }
+
       return newState;
     });
   }, []);
@@ -43,6 +50,7 @@ export const useTimer = (
   const resetTimer = useCallback(() => {
     setIsRunning(false);
     setTimeLeft(initialTime);
+    setHasStarted(false);
 
     // リセット時は開始時刻もクリア
     startTimeRef.current = null;
@@ -143,6 +151,7 @@ export const useTimer = (
     maxSessions,
     timeLeft,
     isRunning,
+    hasStarted,
     startTimeRef,
     toggleTimer,
     resetTimer,

@@ -13,19 +13,23 @@ const timerType: TimerType = 'break';
 export default function BreakTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
-  
+
   // 設定から短い休憩時間を取得
   const { settings } = useSettings();
   const INITIAL_TIME = SECONDS * settings.breakTime;
 
-  const {sessionCount, maxSessions, timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
+  const { sessionCount, maxSessions, timeLeft, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
       <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} maxSessions={maxSessions} />
-      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+
+      <TimerControls
+        isRunning={isRunning}
+        hasStarted={hasStarted}
+        onToggle={toggleTimer}
+        onReset={resetTimer}
+      />
     </div>
   );
 }
-
-

@@ -1,72 +1,106 @@
 'use client';
 
 import { memo } from 'react';
+import Link from 'next/link';
+import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw } from 'lucide-react';
-import { TimerType } from '@/types/timerType';
+
+const BLUE_500 = '#4979f5';
 
 interface TimerControlsProps {
-  timerType: TimerType;
   isRunning: boolean;
+  hasStarted: boolean;
   onToggle: () => void;
   onReset: () => void;
 }
 
 export const TimerControls = memo(function TimerControls({
-  timerType,
   isRunning,
+  hasStarted,
   onToggle,
-  onReset
+  onReset,
 }: TimerControlsProps) {
-  let startLabel: string;
-  switch(timerType) {
-    case 'focus':
-      startLabel = '作業を開始する';
-      break;
-    case 'break':
-      startLabel = '休憩を開始する';
-      break;
-    case 'long-break':
-      startLabel = '長い休憩を開始する';
-      break;
-    default:
-      startLabel = '開始する';
-      break;
-  }
-  const stopLabel ='一時停止する';
-  const resetLabel = 'リセット';
+
+  /**
+   * 左ボタンを返す
+   * - 未開始（hasStarted = false）: SETTINGSボタン（/timer/settingsへ遷移）
+   * - 開始済み（hasStarted = true）: RESETボタン
+   */
+  const renderLeftButton = () => {
+    if (!hasStarted) {
+      return (
+        <Link href="/timer/settings" className="block w-full">
+          <Button
+            variant="outline"
+            className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+            aria-label="設定を開く"
+          >
+            <Settings className="w-5 h-5 mr-2" />
+            SETTINGS
+          </Button>
+        </Link>
+      );
+    }
+
+    return (
+      <Button
+        variant="outline"
+        className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+        onClick={onReset}
+        aria-label="タイマーをリセット"
+      >
+        <RotateCcw className="w-5 h-5 mr-2" />
+        RESET
+      </Button>
+    );
+  };
 
   return (
-    <div className="flex flex-col justify-end items-center w-full max-w-3xl gap-4">
-      <div className="flex items-center">
-        <div className="flex flex-col items-center w-40 gap-2">
+    <div className="flex gap-4 w-full max-w-md px-4">
+      {/* 左: SETTINGS または RESET */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-out ${isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+        style={{
+          flexBasis: isRunning ? '0%' : '50%',
+          flexShrink: 0,
+          flexGrow: 0,
+        }}
+      >
+        <div className="min-w-max">
+          {renderLeftButton()}
+        </div>
+      </div>
+
+      {/* 右: START/STOP */}
+      <div className="flex-1 transition-all duration-500 ease-out">
+        <Button
+          size="lg"
+          className={`h-14 w-full rounded-lg text-white font-bold text-lg transition-all duration-200 ${!isRunning ? 'animate-glow-pulse' : ''
+            }`}
+          style={
+            isRunning ? {
+              backgroundColor: BLUE_500,
+            } : {
+              border: `1px solid ${BLUE_500}`,
+              backgroundColor: 'black',
+            }
+          }
+          onClick={onToggle}
+          aria-label={isRunning ? 'タイマーを停止' : 'タイマーを開始'}
+        >
           {isRunning ? (
-            <label htmlFor="stopWork" className="text-white text-sm">{stopLabel}</label>
+            <>
+              <Pause className="w-6 h-6 mr-2" />
+              STOP
+            </>
           ) : (
-            <label htmlFor="startWork" className="text-white text-sm">{startLabel}</label>
+            <>
+              <Play className="w-6 h-6 mr-2" />
+              START
+            </>
           )}
-          <Button
-            onClick={onToggle}
-            size="lg"
-            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg text-neutral-400 hover:text-white"
-          >
-            {isRunning ? (
-              <Pause id="stopWork" className="w-8 h-8" />
-            ) : (
-              <Play id="startWork" className="w-8 h-8" />
-            )}
-          </Button>
-        </div>
-        <div className="flex flex-col items-center w-40 gap-2">
-          <label htmlFor="resetTimer" className="text-white text-sm">{resetLabel}</label>
-          <Button
-            onClick={onReset}
-            size="lg"
-            className="w-24 h-24 mb-8 rounded-full text-lg font-semibold shadow-lg text-neutral-400 hover:text-white"
-          >
-            <RotateCcw id="resetTimer" className="w-8 h-8" />
-          </Button>
-        </div>
+        </Button>
       </div>
     </div>
   );

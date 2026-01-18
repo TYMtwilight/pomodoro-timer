@@ -1,4 +1,6 @@
 import { getRecords } from '@/app/actions/records';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 import type { RecordWithTask } from '@/types/record';
 import Link from 'next/link';
 import { startOfDay, endOfDay } from 'date-fns';
@@ -34,6 +36,12 @@ const formatTotalDuration = (totalMinutes: number): string => {
 };
 
 export default async function RecordsPage() {
+  // 認証チェック: 未ログインの場合はタイマー画面にリダイレクト
+  const session = await auth();
+  if (!session?.user) {
+    redirect('/timer/focus');
+  }
+
   // 本日の日付範囲を計算
   const today = new Date();
   const todayStart = startOfDay(today);

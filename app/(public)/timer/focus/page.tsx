@@ -15,12 +15,12 @@ const timerType: TimerType = 'focus';
 export default function WorkTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
-  
+
   const { settings } = useSettings();
   const { selectedTaskId } = useTasks();
   const INITIAL_TIME = SECONDS * settings.focusTime;
 
-  const { sessionCount, maxSessions, timeLeft, isRunning, toggleTimer, resetTimer } = useTimer(
+  const { sessionCount, maxSessions, timeLeft, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(
     timerType,
     INITIAL_TIME,
     autoStart,
@@ -30,14 +30,18 @@ export default function WorkTimerPage() {
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
       <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} maxSessions={maxSessions} />
-      
+
       {/* 作業項目選択（タイマー実行中は変更不可） */}
       <div className="my-4">
         <TaskSelect disabled={isRunning} />
       </div>
 
-      <TimerControls timerType={timerType} isRunning={isRunning} onToggle={toggleTimer} onReset={resetTimer} />
+      <TimerControls
+        isRunning={isRunning}
+        hasStarted={hasStarted}
+        onToggle={toggleTimer}
+        onReset={resetTimer}
+      />
     </div>
   );
 }
-
