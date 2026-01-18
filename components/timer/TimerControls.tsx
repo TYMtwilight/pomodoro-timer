@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import Link from 'next/link';
 import { Play, Pause, RotateCcw, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -11,7 +12,6 @@ interface TimerControlsProps {
   hasStarted: boolean;
   onToggle: () => void;
   onReset: () => void;
-  onOpenSettings: () => void;
 }
 
 export const TimerControls = memo(function TimerControls({
@@ -19,26 +19,26 @@ export const TimerControls = memo(function TimerControls({
   hasStarted,
   onToggle,
   onReset,
-  onOpenSettings,
 }: TimerControlsProps) {
 
   /**
    * 左ボタンを返す
-   * - 未開始（hasStarted = false）: SETTINGSボタン
+   * - 未開始（hasStarted = false）: SETTINGSボタン（/timer/settingsへ遷移）
    * - 開始済み（hasStarted = true）: RESETボタン
    */
   const renderLeftButton = () => {
     if (!hasStarted) {
       return (
-        <Button
-          variant="outline"
-          className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
-          onClick={onOpenSettings}
-          aria-label="設定を開く"
-        >
-          <Settings className="w-5 h-5 mr-2" />
-          SETTINGS
-        </Button>
+        <Link href="/timer/settings" className="block w-full">
+          <Button
+            variant="outline"
+            className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+            aria-label="設定を開く"
+          >
+            <Settings className="w-5 h-5 mr-2" />
+            SETTINGS
+          </Button>
+        </Link>
       );
     }
 
@@ -58,10 +58,9 @@ export const TimerControls = memo(function TimerControls({
   return (
     <div className="flex gap-4 w-full max-w-md px-4">
       {/* 左: SETTINGS または RESET */}
-      <div 
-        className={`overflow-hidden transition-all duration-500 ease-out ${
-          isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-out ${isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
         style={{
           flexBasis: isRunning ? '0%' : '50%',
           flexShrink: 0,
@@ -77,9 +76,8 @@ export const TimerControls = memo(function TimerControls({
       <div className="flex-1 transition-all duration-500 ease-out">
         <Button
           size="lg"
-          className={`h-14 w-full rounded-lg text-white font-bold text-lg transition-all duration-200 ${
-            !isRunning ? 'animate-glow-pulse' : ''
-          }`}
+          className={`h-14 w-full rounded-lg text-white font-bold text-lg transition-all duration-200 ${!isRunning ? 'animate-glow-pulse' : ''
+            }`}
           style={
             isRunning ? {
               backgroundColor: BLUE_500,
