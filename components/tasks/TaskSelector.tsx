@@ -65,7 +65,7 @@ export function TaskSelector({ disabled = false }: TaskSelectorProps) {
   };
 
   return (
-    <div className="flex flex-col items-center absolute top-4 bg-gray-900 w-[80%] sm:w-[30%] rounded-3xl z-10">
+    <div className="flex flex-col items-center bg-gray-900 w-[80%] sm:w-[30%] rounded-3xl">
       {/* 上ボタン */}
       <button
         onClick={handlePrev}

@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useTimer } from '@/components/timer/useTimer';
+import { TimerLabel } from '@/components/timer/TimerLabel';
 import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
@@ -27,9 +28,9 @@ export default function WorkTimerPage() {
   );
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-black text-white">     
-      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} isRunning={isRunning} sessionCount={sessionCount} maxSessions={maxSessions} />
-
+    <div className="flex flex-col items-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
+      <TimerLabel timerType={timerType} isRunning={isRunning} />
+      <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} maxSessions={maxSessions} />
       <TimerControls
         isRunning={isRunning}
         hasStarted={hasStarted}
