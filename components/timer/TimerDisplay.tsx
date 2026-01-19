@@ -1,6 +1,7 @@
 'use client';
 import { TimerType } from '@/types/timerType';
 import { Orbitron } from 'next/font/google';
+import { TaskSelector } from '@/components/tasks';
 
 const orbitron = Orbitron({ subsets: ['latin'], weight: '400' });
 
@@ -21,6 +22,7 @@ interface TimerDisplayProps {
   timerType: TimerType;
   timeLeft: number;
   initialTime: number;
+  isRunning: boolean;
   sessionCount?: number;
   maxSessions?: number;
 }
@@ -35,7 +37,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, maxSessions }: TimerDisplayProps) {
+export function TimerDisplay({ timerType, timeLeft, initialTime, isRunning, sessionCount, maxSessions }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -45,32 +47,21 @@ export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, m
 
   const { minutes, seconds } = formatTime(timeLeft);
 
-  let timerTitle: string;
-  switch(timerType) {
-    case 'focus':
-      timerTitle = 'focus time';
-      break;
-    case 'break':
-      timerTitle = 'break time';
-      break;
-    case 'long-break':
-      timerTitle = 'long break time';
-      break;
-    default:
-      timerTitle = 'focus time';
-      break;
-  }
 
   return (
     <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative">
-      <div className="absolute top-4 text-3xl">
-        {timerTitle}
-      </div>
-      {timerTitle === 'focus time' && sessionCount && maxSessions && (
-        <div className="absolute top-16 text-lg opacity-80">
-          {sessionCount}/{maxSessions} ポモドーロ
+      {timerType === 'focus' ? (
+        <TaskSelector disabled={isRunning} />
+      ) : (
+        <div className="flex flex-col items-center justify-center absolute top-4 w-[80%] sm:w-[30%] py-2 bg-gray-900 rounded-3xl z-10">
+          <div className="h-4"></div>
+          <span className="text-xl font-medium text-white">
+            {timerType === 'break' ? '休憩' : '長い休憩'}
+          </span>
+          <div className="h-4"></div>
         </div>
-      )}
+      )
+      }
       <div className="absolute inset-0 flex items-center justify-center">
         <div className={orbitron.className}>
           <span

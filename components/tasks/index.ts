@@ -1,1 +1,1 @@
-export { TaskSelect } from './TaskSelect';
+export { TaskSelector } from './TaskSelector';

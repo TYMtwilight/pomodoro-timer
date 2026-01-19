@@ -22,7 +22,7 @@ export default function LongBreakTimerPage() {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
-      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} maxSessions={maxSessions} />
+      <TimerDisplay timerType={timerType} timeLeft={timeLeft} initialTime={INITIAL_TIME} isRunning={isRunning} maxSessions={maxSessions} />
 
       <TimerControls
         isRunning={isRunning}
