@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTimer } from '@/components/timer/useTimer';
 import { TimerLabel } from '@/components/timer/TimerLabel';
@@ -16,10 +17,19 @@ export default function BreakTimerPage() {
   const autoStart = searchParams.get('autoStart') === 'true';
 
   // 設定から短い休憩時間を取得
-  const { settings } = useSettings();
-  const INITIAL_TIME = SECONDS * settings.breakTime;
+  const { settings, isLoading } = useSettings();
+  const INITIAL_TIME = useMemo(() => SECONDS * settings.breakTime, [settings.breakTime]);
 
   const { sessionCount, maxSessions, timeLeft, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(timerType, INITIAL_TIME, autoStart);
+
+  // 設定読み込み中はローディング表示
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
+        <div className="text-xl">読み込み中...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">

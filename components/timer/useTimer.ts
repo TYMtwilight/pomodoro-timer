@@ -66,8 +66,15 @@ export const useTimer = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // クエリパラメーターのクリーンアップ用のRef（一度だけ実行するため）
+  const hasCleanedUrlRef = useRef(false);
+
   useEffect(() => {
-    // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
+    // 初回マウント時のみURLからクエリパラメーターを削除
+    if (hasCleanedUrlRef.current) return;
+
+    hasCleanedUrlRef.current = true;
+
     switch (timerType) {
       case 'focus':
         router.replace('/timer/focus');

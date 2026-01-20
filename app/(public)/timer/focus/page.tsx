@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTimer } from '@/components/timer/useTimer';
 import { TimerLabel } from '@/components/timer/TimerLabel';
@@ -16,9 +17,9 @@ export default function WorkTimerPage() {
   const searchParams = useSearchParams();
   const autoStart = searchParams.get('autoStart') === 'true';
 
-  const { settings } = useSettings();
+  const { settings, isLoading } = useSettings();
   const { selectedTaskId } = useTasks();
-  const INITIAL_TIME = SECONDS * settings.focusTime;
+  const INITIAL_TIME = useMemo(() => SECONDS * settings.focusTime, [settings.focusTime]);
 
   const { sessionCount, maxSessions, timeLeft, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(
     timerType,
@@ -27,8 +28,17 @@ export default function WorkTimerPage() {
     selectedTaskId
   );
 
+  // 設定読み込み中はローディング表示
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
+        <div className="text-xl">読み込み中...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
       <TimerLabel timerType={timerType} isRunning={isRunning} />
       <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} sessionCount={sessionCount} maxSessions={maxSessions} />
       <TimerControls
