@@ -94,7 +94,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   return (
     <SettingsContext.Provider value={{ settings, updateSettings, isLoading }}>
-      {children}
+      {isLoading ? null : children}
     </SettingsContext.Provider>
   );
 }
