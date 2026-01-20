@@ -32,7 +32,7 @@ export default function LongBreakTimerPage() {
   }
 
   return (
-    <div className="flex flex-col items-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)] gap-8 bg-black text-white px-4 py-4">
       <TimerLabel timerType={timerType} isRunning={isRunning} />
       <TimerDisplay timeLeft={timeLeft} initialTime={INITIAL_TIME} maxSessions={maxSessions} />
       <TimerControls
