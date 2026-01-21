@@ -28,9 +28,6 @@
 | タイマー機能 | ○ | ○ |
 | 設定機能（保存なし） | ○ | - |
 | 設定機能（保存あり） | - | ○ |
-| 作業項目管理 | - | ○ |
-| 作業記録保存 | - | ○ |
-| 作業記録閲覧 | - | ○ |
 
 ---
 
@@ -88,73 +85,48 @@
 
 ---
 
-### 2.4 作業項目管理機能（ログイン時のみ）
+### 2.4 作業記録保存機能（ログイン時のみ）
 
-### 2.4.1 登録
-
-- 項目名（必須、1-100文字）
-- バリデーション：空欄チェック
-
-### 2.4.2 編集
-
-- 項目名の変更
-- 保存 / キャンセル機能
-
-### 2.4.3 削除
-
-- 削除前に確認ダイアログ表示
-- 過去の作業記録は保持
-
-### 2.4.4 選択
-
-- ドロップダウンメニューで選択
-- 「項目なし」での作業も可能
-
----
-
-### 2.5 作業記録保存機能（ログイン時のみ）
-
-### 2.5.1 記録内容
+### 2.4.1 記録内容
 
 - 開始時刻
 - 終了時刻
-- 作業項目ID（nullableで「項目なし」の場合はnull）
-- 作業時間（秒単位）
+- 作業時間（分単位）
 
-### 2.5.2 保存タイミング
+### 2.4.2 保存タイミング
 
 - ポモドーロ（作業時間）完了時に自動保存
 
 ---
 
-### 2.6 作業記録閲覧機能（ログイン時のみ）
+### 2.5 作業記録閲覧機能（ログイン時のみ）
 
-### 2.6.1 本日の記録一覧
+### 2.5.1 本日の記録一覧
 
-- 作業項目名（または「項目なし」）
 - 開始時刻
 - 作業時間（分単位）
 - 新しい順に表示
+- 個々の作業時間の記録を削除することが可能
 
-### 2.6.2 本日のサマリー
+### 2.5.2 本日のサマリー
 
 - 総作業時間
 
 ---
 
-### 2.7 ログイン機能
+### 2.6 ログイン機能
 
-### 2.7.1 認証方式
+### 2.6.1 認証方式
 
 - Google OAuth認証
 
-### 2.7.2 取得情報
+### 2.6.2 取得情報
 
 - 名前
 - メールアドレス
 - プロフィール画像（オプション）
 
-### 2.7.3 機能
+### 2.6.3 機能
 
 - ログイン / ログアウト
 - セッション管理
@@ -186,30 +158,21 @@
 
 ### 4.1 メイン画面（タイマー画面 & 記録確認画面）
 
-![image (2).png](image_(2).png)
-
 ### 4.2 設定画面（モーダル）
 
 - 各種時間設定フォーム
-- 保存ボタン（ログイン時のみ）
+- 設定ボタン
 - デフォルトに戻すボタン
-
-### 4.3 作業項目管理画面（モーダル）
-
-- 新規登録フォーム
-- 項目一覧（編集・削除ボタン付き）
-
----
 
 ## 5. データモデル
 
 ### 5.1 ER図概要
 
 ```
-Users ──< Tasks
+Users 
   │
   └──< Settings
-  └──< Records >── Tasks
+  └──< Records 
 
 ```
 
@@ -226,23 +189,13 @@ Users ──< Tasks
 | created_at | timestamp | not null | 作成日時 |
 | updated_at | timestamp | not null | 更新日時 |
 
-### Tasks
-
-| カラム名 | 型 | 制約 | 説明 |
-| --- | --- | --- | --- |
-| id | string | PK | 作業項目ID |
-| user_id | string | FK, not null | ユーザーID |
-| name | string | not null | 項目名 |
-| created_at | timestamp | not null | 作成日時 |
-| updated_at | timestamp | not null | 更新日時 |
-| deleted_at | timestamp | nullable | 削除日時（論理削除） |
 
 ### Settings
 
 | カラム名 | 型 | 制約 | 説明 |
 | --- | --- | --- | --- |
 | user_id | string | PK, FK | ユーザーID |
-| work_duration | integer | not null | 作業時間（分） |
+| focus | integer | not null | 作業時間（分） |
 | short_break | integer | not null | 短い休憩（分） |
 | long_break | integer | not null | 長い休憩（分） |
 | pomodoros_until_long_break | integer | not null | 長い休憩までの回数 |
@@ -255,17 +208,12 @@ Users ──< Tasks
 | --- | --- | --- | --- |
 | id | string | PK | 記録ID |
 | user_id | string | FK, not null | ユーザーID |
-| task_id | string | FK, nullable | 作業項目ID |
 | start_time | timestamp | not null | 開始時刻 |
 | end_time | timestamp | not null | 終了時刻 |
 | duration | integer | not null | 作業時間（分） |
 | created_at | timestamp | not null | 作成日時 |
 
 ---
-
-### RDB図
-
-![mermaid-diagram-1766499076116.png](mermaid-diagram-1766499076116.png)
 
 ### ディレクトリ構成
 
@@ -275,7 +223,6 @@ pomodoro-timer/
 ├── middleware.ts              # 認証ミドルウェア（オプション）
 ├── app/
 │   ├── actions/              # Server Actions
-│   │   ├── tasks.ts         # 作業項目のCRUD
 │   │   ├── records.ts       # 作業記録の保存・取得
 │   │   └── settings.ts      # 設定の保存・取得
 │   ├── api/
@@ -283,14 +230,19 @@ pomodoro-timer/
 │   │       └── [...nextauth]/
 │   │           └── route.ts
 │   ├── (auth)/              # 認証関連ページ（オプション）
+│   ├── (public)/            # 公開ページ
+│   │   ├── layout.tsx      # 公開ページレイアウト
+│   │   └── timer/          # タイマー関連ページ
+│   │       ├── work/       # 作業タイマー
+│   │       ├── break/      # 休憩タイマー
+│   │       └── completion/ # 完了画面
 │   ├── (dashboard)/         # ダッシュボード（ログイン後）
 │   ├── layout.tsx           # ルートレイアウト
-│   ├── page.tsx             # トップページ（タイマー画面）
+│   ├── page.tsx             # トップページ
 │   └── globals.css          # グローバルCSS
 ├── components/
 │   ├── ui/                  # shadcn/ui コンポーネント
 │   ├── timer/               # タイマー関連コンポーネント
-│   ├── tasks/               # 作業項目関連コンポーネント
 │   └── records/             # 記録関連コンポーネント
 ├── lib/
 │   ├── prisma.ts            # Prisma Client
@@ -354,7 +306,7 @@ pomodoro-timer/
 
 | 技術 | バージョン | 用途 |
 | --- | --- | --- |
-| **Next.js Server Actions** | 15.x | サーバーサイドロジック（CRUD操作） |
+| **Next.js Server Actions** | 15.x | サーバーサイドロジック（CRUD操作）<br>※API Routesは認証（NextAuth.js）用のみ使用 |
 
 2.2 認証
 
@@ -394,11 +346,7 @@ pomodoro-timer/
 
 ### システム全体構成図
 
-![image.png](image.png)
-
-### Server Actionsエンドポイント構成
-
-![image.png](image%201.png)
+（システム構成図を追加予定）
 
 ## 7. Phase 1で実装しない機能
 
@@ -409,10 +357,8 @@ pomodoro-timer/
 - カテゴリ・タグ機能
 - 項目の色分け
 - エクスポート機能
-- 作業記録の編集・削除
+- 作業タスクの編集・削除
 - 作業項目の並び替え・検索
-- 完了ポモドーロ数のカウント
-- 集中度の指標
 
 ---
 
@@ -440,94 +386,8 @@ pomodoro-timer/
 
 ---
 
-**文書バージョン**: 1.1
+**文書バージョン**: 1.2
 
 **作成日**: 2024年12月23日
 
-**最終更新日**: 2024年12月23日
-
-# 技術スタック定義
-
-## 1. フロントエンド
-
-### 1.1 コアフレームワーク
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **Next.js** | 15.x (App Router) | フルスタックフレームワーク |
-| **React** | 19.x | UIライブラリ |
-| **TypeScript** | 5.x | 型システム |
-
-### 1.2 UIライブラリ・スタイリング
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **shadcn/ui** | latest | UIコンポーネントライブラリ |
-| **Tailwind CSS** | 3.x | ユーティリティファーストCSS |
-| **lucide-react** | latest | アイコンライブラリ |
-
-### 1.3 状態管理
-
-- React標準機能を使用
-    - `useState`
-    - `useContext`
-    - `useReducer`（必要に応じて）
-
-### 1.4 バリデーション
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **zod** | 3.x | スキーマバリデーション |
-
-### 1.5 日付・時刻操作
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **date-fns** | 3.x | 日付操作ライブラリ |
-
----
-
-## 2. バックエンド
-
-### 2.1 フレームワーク
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **Next.js API Routes** | 15.x | RESTful API |
-| **Next.js Server Actions** | 15.x | サーバーサイドロジック（オプション） |
-
-### 2.2 認証
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **NextAuth.js (Auth.js)** | 5.x | 認証システム |
-| **Google OAuth Provider** | - | Google認証プロバイダー |
-
-### 2.3 データベース
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **PostgreSQL** | 15.x以上 | リレーショナルデータベース |
-| **Supabase** | - | データベースホスティング |
-| **Prisma** | 5.x | ORM（Object-Relational Mapping） |
-
----
-
-## 3. 開発ツール
-
-### 3.1 コード品質
-
-| 技術 | バージョン | 用途 |
-| --- | --- | --- |
-| **ESLint** | 8.x | コードリンター |
-| **Prettier** | 3.x | コードフォーマッター |
-| **TypeScript ESLint** | 7.x | TypeScript用ESLintルール |
-
----
-
-## 4. デプロイ・ホスティング
-
-| サービス | 用途 |
-| --- | --- |
-| **Vercel** | アプリケーションホスティング（Next.js最適化） |
-| **Supabase** | PostgreSQLデータベースホスティング |
+**最終更新日**: 2026年1月21日
