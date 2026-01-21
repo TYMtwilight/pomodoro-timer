@@ -16,16 +16,15 @@ export function TaskSelector({ disabled = false }: TaskSelectorProps) {
   const { data: session } = useSession();
   const { tasks, selectedTaskId, isLoading, selectTask } = useTasks();
 
-  // 未ログイン時はレイアウト維持用の空白スペースを表示
+  // 未ログイン時は「集中！」ラベルを表示
   if (!session) {
     return (
-      <div className="flex flex-col items-center gap-1">
-        {/* 上ボタンと同じ高さの空白 */}
-        <div className="p-1 h-5" />
-        {/* タスク名と同じ高さの空白 */}
-        <div className="text-xl h-7" />
-        {/* 下ボタンと同じ高さの空白 */}
-        <div className="p-1 h-5" />
+      <div className="flex flex-col items-center justify-center w-[80%] sm:w-[30%] py-2 bg-gray-900 rounded-3xl">
+        <div className="h-5"></div>
+        <span className="text-xl font-medium text-white">
+          集中！
+        </span>
+        <div className="h-5"></div>
       </div>
     );
   }
