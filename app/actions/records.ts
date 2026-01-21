@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import type {
   CreateRecordInput,
   GetRecordsOptions,
-  RecordWithTask,
+  Record,
   DailyStats,
   MonthlyStats,
   WeeklyStats,
@@ -36,13 +36,12 @@ export async function createRecord(
   }
 
   try {
-    const record = await prisma.record.create ({
+    const record = await prisma.record.create({
       data: {
         userId: session.user.id,
         startTime: input.startTime,
         endTime: input.endTime,
         duration: input.duration,
-        taskId: input.taskId || null,
       },
     });
 
@@ -70,7 +69,7 @@ export async function getRecords(
 ): Promise<{
   success: boolean;
   error?: string;
-  records?: RecordWithTask[];
+  records?: Record[];
 }> {
   const session = await auth();
 
@@ -94,14 +93,6 @@ export async function getRecords(
             },
           }
         : {}),
-      },
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
       orderBy: {
         startTime: 'desc',

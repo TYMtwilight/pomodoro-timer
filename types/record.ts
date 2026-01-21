@@ -4,8 +4,7 @@
 export interface CreateRecordInput {
   startTime: Date;
   endTime: Date;
-  duration: number;       // 作業時間（分）
-  taskId?: string | null; // タスクID（オプショナル）
+  duration: number; // 作業時間（分）
 }
 
 /**
@@ -23,21 +22,10 @@ export interface GetRecordsOptions {
 export interface Record {
   id: string;
   userId: string;
-  taskId: string | null;
   startTime: Date;
   endTime: Date;
   duration: number;
   createdAt: Date;
-}
-
-/**
- * タスク情報を含む作業記録データの型
- */
-export interface RecordWithTask extends Record {
-  task: {
-    id: string;
-    name: string;
-  } | null;
 }
 
 /**
