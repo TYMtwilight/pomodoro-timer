@@ -8,8 +8,7 @@ import { useNotificationSound } from '@/hooks/useNotificationSound';
 export const useTimer = (
   timerType: TimerType,
   initialTime: number,
-  autoStart: boolean = false,
-  taskId: string | null = null
+  autoStart: boolean = false
 ) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
@@ -122,9 +121,8 @@ export const useTimer = (
               startTime: startTimeRef.current,
               endTime: endTime,
               duration: durationMinutes,
-              taskId: taskId,
             });
-            console.log('作業記録を保存しました（taskId:', taskId, ')');
+            console.log('作業記録を保存しました');
           } catch (error) {
             console.error('作業記録の保存に失敗：', error);
           } finally {

@@ -1,7 +1,7 @@
 import { getRecords } from '@/app/actions/records';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import type { RecordWithTask } from '@/types/record';
+import type { Record } from '@/types/record';
 import Link from 'next/link';
 import { startOfDay, endOfDay } from 'date-fns';
 
@@ -64,8 +64,8 @@ export default async function RecordsPage() {
     );
   }
 
-  const records: RecordWithTask[] | undefined = result.records || [];
-  const todayRecords: RecordWithTask[] = todayResult.success ? (todayResult.records || []) : [];
+  const records: Record[] | undefined = result.records || [];
+  const todayRecords: Record[] = todayResult.success ? (todayResult.records || []) : [];
   
   // 本日の総作業時間を計算（分単位）
   const todayTotalMinutes = todayRecords.reduce((sum, record) => sum + record.duration, 0);
@@ -107,11 +107,6 @@ export default async function RecordsPage() {
                     <p className="text-lg font-semibold mt-1">
                       {formatTime(record.startTime)} - {formatTime(record.endTime)}
                     </p>
-                    {record.task && (
-                      <p className="text-sm text-blue-400 mt-2">
-                        {record.task.name}
-                      </p>
-                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold">{record.duration}分</p>
