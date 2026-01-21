@@ -156,12 +156,32 @@
 
 ## 4. 画面構成
 
-### 4.1 メイン画面（タイマー画面 & 記録確認画面）
+### 4.1 タイマー画面（トップページ `/`）
 
-### 4.2 設定画面（モーダル）
+- 集中タイマー（25分）
+- タイマー表示・操作
+- 設定ボタン（モーダルを開く）
+
+### 4.2 休憩タイマー画面（`/break`, `/long-break`）
+
+- 短い休憩タイマー（5分）
+- 長い休憩タイマー（15分）
+
+### 4.3 完了画面（`/completion`）
+
+- タイマー完了メッセージ
+- 次のタイマーへの遷移
+
+### 4.4 作業記録画面（`/records`）（ログイン時のみ）
+
+- 本日の記録一覧（開始時刻、作業時間）
+- 本日のサマリー（総作業時間）
+- 個別記録の削除機能
+
+### 4.5 設定画面（モーダル）
 
 - 各種時間設定フォーム
-- 設定ボタン
+- 保存ボタン
 - デフォルトに戻すボタン
 
 ## 5. データモデル
@@ -195,7 +215,7 @@ Users
 | カラム名 | 型 | 制約 | 説明 |
 | --- | --- | --- | --- |
 | user_id | string | PK, FK | ユーザーID |
-| focus | integer | not null | 作業時間（分） |
+| focus_duration | integer | not null | 作業時間（分） |
 | short_break | integer | not null | 短い休憩（分） |
 | long_break | integer | not null | 長い休憩（分） |
 | pomodoros_until_long_break | integer | not null | 長い休憩までの回数 |
@@ -223,27 +243,30 @@ pomodoro-timer/
 ├── middleware.ts              # 認証ミドルウェア（オプション）
 ├── app/
 │   ├── actions/              # Server Actions
-│   │   ├── records.ts       # 作業記録の保存・取得
+│   │   ├── records.ts       # 作業記録の保存・取得・削除
 │   │   └── settings.ts      # 設定の保存・取得
 │   ├── api/
 │   │   └── auth/            # NextAuth.js専用（必須）
 │   │       └── [...nextauth]/
 │   │           └── route.ts
 │   ├── (auth)/              # 認証関連ページ（オプション）
-│   ├── (public)/            # 公開ページ
-│   │   ├── layout.tsx      # 公開ページレイアウト
-│   │   └── timer/          # タイマー関連ページ
-│   │       ├── work/       # 作業タイマー
-│   │       ├── break/      # 休憩タイマー
-│   │       └── completion/ # 完了画面
-│   ├── (dashboard)/         # ダッシュボード（ログイン後）
+│   ├── break/               # 短い休憩タイマー
+│   │   └── page.tsx
+│   ├── long-break/          # 長い休憩タイマー
+│   │   └── page.tsx
+│   ├── completion/          # 完了画面
+│   │   └── page.tsx
+│   ├── records/             # 作業記録画面（ログイン時のみ）
+│   │   └── page.tsx
 │   ├── layout.tsx           # ルートレイアウト
-│   ├── page.tsx             # トップページ
+│   ├── page.tsx             # トップページ（集中タイマー）
+│   ├── providers.tsx        # クライアントサイドプロバイダー
 │   └── globals.css          # グローバルCSS
 ├── components/
 │   ├── ui/                  # shadcn/ui コンポーネント
 │   ├── timer/               # タイマー関連コンポーネント
-│   └── records/             # 記録関連コンポーネント
+│   ├── records/             # 記録関連コンポーネント
+│   └── settings/            # 設定モーダルコンポーネント
 ├── lib/
 │   ├── prisma.ts            # Prisma Client
 │   └── utils.ts             # ユーティリティ関数
