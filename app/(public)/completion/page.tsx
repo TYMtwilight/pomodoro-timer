@@ -43,7 +43,24 @@ export default function CompletionPage() {
     else if (timerType === 'long-break') {
       resetSession();
     }
-    router.push(`/timer/${nextTimerType}?autoStart=true`);
+
+    // 次のタイマーページのURLを決定
+    let nextUrl: string;
+    switch (nextTimerType) {
+      case 'focus':
+        nextUrl = '/?autoStart=true';
+        break;
+      case 'break':
+        nextUrl = '/break?autoStart=true';
+        break;
+      case 'long-break':
+        nextUrl = '/long-break?autoStart=true';
+        break;
+      default:
+        nextUrl = '/?autoStart=true';
+        break;
+    }
+    router.push(nextUrl);
   };
 
   return (

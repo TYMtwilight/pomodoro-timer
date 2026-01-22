@@ -22,7 +22,7 @@ export function TimerPage({ timerType }: TimerPageProps) {
 
   // タイマー完了時のコールバック（ページ遷移）
   const handleTimerComplete = useCallback(() => {
-    router.push(`/timer/completion?timerType=${timerType}`);
+    router.push(`/completion?timerType=${timerType}`);
   }, [router, timerType]);
 
   const { sessionCount, maxSessions, timeLeft, initialTime, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(
@@ -38,10 +38,10 @@ export function TimerPage({ timerType }: TimerPageProps) {
         router.replace('/');
         break;
       case 'break':
-        router.replace('/timer/break');
+        router.replace('/break');
         break;
       case 'long-break':
-        router.replace('/timer/long-break');
+        router.replace('/long-break');
         break;
       default:
         router.replace('/');
