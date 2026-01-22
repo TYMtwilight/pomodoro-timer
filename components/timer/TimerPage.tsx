@@ -7,7 +7,7 @@ import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
 import { TimerType } from '@/types/timerType';
 import { useSettings } from '@/contexts/SettingsContext';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 
 interface TimerPageProps {
   timerType: TimerType;
@@ -20,9 +20,15 @@ export function TimerPage({ timerType }: TimerPageProps) {
 
   const { isLoading } = useSettings();
 
+  // タイマー完了時のコールバック（ページ遷移）
+  const handleTimerComplete = useCallback(() => {
+    router.push(`/timer/completion?timerType=${timerType}`);
+  }, [router, timerType]);
+
   const { sessionCount, maxSessions, timeLeft, initialTime, isRunning, hasStarted, toggleTimer, resetTimer } = useTimer(
     timerType,
-    autoStart
+    autoStart,
+    handleTimerComplete
   );
 
   useEffect(() => {
