@@ -21,7 +21,7 @@ export default async function RecordsPage() {
   // 認証チェック: 未ログインの場合はタイマー画面にリダイレクト
   const session = await auth();
   if (!session?.user) {
-    redirect('/timer/focus');
+    redirect('/');
   }
 
   // 本日の日付範囲を計算
@@ -76,7 +76,7 @@ export default async function RecordsPage() {
 
         <div className="mt-8">
           <Link
-            href="/timer/focus"
+            href="/"
             className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
           >
             タイマーに戻る

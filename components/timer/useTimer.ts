@@ -76,7 +76,7 @@ export const useTimer = (
 
     switch (timerType) {
       case 'focus':
-        router.replace('/timer/focus');
+        router.replace('/');
         break;
       case 'break':
         router.replace('/timer/break');
@@ -85,7 +85,7 @@ export const useTimer = (
         router.replace('/timer/long-break');
         break;
       default:
-        router.replace('/timer/focus');
+        router.replace('/');
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
