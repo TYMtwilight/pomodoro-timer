@@ -75,7 +75,7 @@ export default async function RecordsPage() {
         <h1 className="text-3xl font-bold mb-8">作業記録</h1>
 
         {/* 本日のサマリー */}
-        <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 mb-8 border border-blue-800/50">
+        <div className="bg-linear-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 mb-8 border border-blue-800/50">
           <h2 className="text-lg font-medium text-gray-300 mb-2">本日のサマリー</h2>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-bold text-white">
