@@ -1,16 +1,33 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSession } from '@/contexts/SessionContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
 import { useNotificationSound } from '@/hooks/useNotificationSound';
 
+const SECONDS = 60;
+
 export const useTimer = (
   timerType: TimerType,
-  initialTime: number,
   autoStart: boolean = false,
-  taskId: string | null = null
+  onComplete?: () => void
 ) => {
+  const { settings } = useSettings();
+
+  // timerTypeに応じて初期時間を計算
+  const initialTime = useMemo(() => {
+    switch (timerType) {
+      case 'focus':
+        return SECONDS * settings.focusTime;
+      case 'break':
+        return SECONDS * settings.breakTime;
+      case 'long-break':
+        return SECONDS * settings.longBreakTime;
+      default:
+        return SECONDS * settings.focusTime;
+    }
+  }, [timerType, settings.focusTime, settings.breakTime, settings.longBreakTime]);
+
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
   const [isRunning, setIsRunning] = useState(autoStart);
@@ -23,7 +40,6 @@ export const useTimer = (
   // setIntervalのIDを保存するためのRef
   // useRefを使う理由：再レンダリングを引き起こさず、コンポーネントのライフサイクル全体で同じ値を保持できるため
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const router = useRouter();
   const { sessionCount, maxSessions } = useSession();
   const { playNotificationSound } = useNotificationSound();
 
@@ -32,14 +48,14 @@ export const useTimer = (
     setIsRunning((prev) => {
       const newState = !prev;
 
-      // タイマー開始時に現在時刻を記録（初回のみ）
-      // 一時停止→再開の場合は記録しない
-      if (newState && !startTimeRef.current) {
-        startTimeRef.current = new Date();
-      }
-
-      // 一度でも開始したらhasStartedをtrueに
+      // タイマー開始時の処理
       if (newState) {
+        // まだ開始時刻が記録されていない場合のみ現在時刻を記録
+        if (!startTimeRef.current) {
+          startTimeRef.current = new Date();
+        }
+
+        // 一度でも開始したらhasStartedをtrueに
         setHasStarted(true);
       }
 
@@ -56,31 +72,19 @@ export const useTimer = (
     startTimeRef.current = null;
   }, [initialTime]);
 
+  // initialTimeが変更された場合（設定変更時など）、タイマーが停止中で未開始の場合はtimeLeftを更新
+  useEffect(() => {
+    if (!isRunning && !hasStarted) {
+      setTimeLeft(initialTime);
+    }
+  }, [initialTime, isRunning, hasStarted]);
+
   /**
    * autoStart=true の場合、初回マウント時に開始時刻を記録
    */
   useEffect(() => {
     if (autoStart && !startTimeRef.current) {
       startTimeRef.current = new Date();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    // URLからクエリパラメーターを削除（ブラウザの戻るボタンで戻った場合の再実行を防ぐ）
-    switch (timerType) {
-      case 'focus':
-        router.replace('/timer/focus');
-        break;
-      case 'break':
-        router.replace('/timer/break');
-        break;
-      case 'long-break':
-        router.replace('/timer/long-break');
-        break;
-      default:
-        router.replace('/timer/focus');
-        break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -115,9 +119,8 @@ export const useTimer = (
               startTime: startTimeRef.current,
               endTime: endTime,
               duration: durationMinutes,
-              taskId: taskId,
             });
-            console.log('作業記録を保存しました（taskId:', taskId, ')');
+            console.log('作業記録を保存しました');
           } catch (error) {
             console.error('作業記録の保存に失敗：', error);
           } finally {
@@ -127,14 +130,14 @@ export const useTimer = (
         }
       };
 
-      // 非同期処理を実行してから遷移
+      // 非同期処理を実行してから、完了コールバックを呼び出す
       handleTimerComplete()
         .then(() => {
-          router.push(`/timer/completion?timerType=${timerType}`);
+          onComplete?.();
         })
         .catch((error) => {
           console.error('予期しないエラー', error);
-          router.push(`/timer/completion?timerType=${timerType}`);
+          onComplete?.();
         });
     }
 
@@ -150,6 +153,7 @@ export const useTimer = (
     sessionCount,
     maxSessions,
     timeLeft,
+    initialTime,
     isRunning,
     hasStarted,
     startTimeRef,

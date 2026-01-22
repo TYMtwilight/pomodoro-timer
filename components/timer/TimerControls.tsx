@@ -23,13 +23,13 @@ export const TimerControls = memo(function TimerControls({
 
   /**
    * 左ボタンを返す
-   * - 未開始（hasStarted = false）: SETTINGSボタン（/timer/settingsへ遷移）
+   * - 未開始（hasStarted = false）: SETTINGSボタン（/settingsへ遷移）
    * - 開始済み（hasStarted = true）: RESETボタン
    */
   const renderLeftButton = () => {
     if (!hasStarted) {
       return (
-        <Link href="/timer/settings" className="block w-full">
+        <Link href="/settings" className="block w-full">
           <Button
             variant="outline"
             className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"

@@ -6,13 +6,24 @@ import { revalidatePath } from 'next/cache';
 import type {
   CreateRecordInput,
   GetRecordsOptions,
-  RecordWithTask,
-  DailyStats,
-  MonthlyStats,
-  WeeklyStats,
-  MonthlyStatsDetail,
-  YearlyStats
+  FormattedRecord,
+  TodayStats,
 } from '@/types/record';
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+};
+
+const formatTime = (date: Date) => {
+  return date.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
 
 /**
  * 作業記録を作成する
@@ -36,13 +47,12 @@ export async function createRecord(
   }
 
   try {
-    const record = await prisma.record.create ({
+    const record = await prisma.record.create({
       data: {
         userId: session.user.id,
         startTime: input.startTime,
         endTime: input.endTime,
         duration: input.duration,
-        taskId: input.taskId || null,
       },
     });
 
@@ -70,7 +80,7 @@ export async function getRecords(
 ): Promise<{
   success: boolean;
   error?: string;
-  records?: RecordWithTask[];
+  records?: FormattedRecord[];
 }> {
   const session = await auth();
 
@@ -95,23 +105,23 @@ export async function getRecords(
           }
         : {}),
       },
-      include: {
-        task: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
       orderBy: {
         startTime: 'desc',
       },
       take: options?.limit || undefined,
     });
 
+    const formattedRecords = records.map((record) => ({
+      id: record.id,
+      date: formatDate(record.startTime),
+      startTime: formatTime(record.startTime),
+      endTime: formatTime(record.endTime),
+      duration: record.duration,
+    }));
+
     return {
       success: true,
-      records,
+      records: formattedRecords,
     };
   } catch (error) {
     console.error('作業記録の取得に失敗しました：', error);
@@ -123,18 +133,16 @@ export async function getRecords(
 }
 
 /**
- * 週単位の統計を取得
+ * 本日の作業サマリーを取得する
  */
-export async function getWeeklyStats(
-  weekStart: Date,
-  weekEnd: Date
-): Promise<{
+export async function getTodayStats(): Promise<{
   success: boolean;
   error?: string;
-  stats?: WeeklyStats;
+  stats?: TodayStats;
 }> {
   const session = await auth();
 
+  // 未ログインの場合はエラー
   if (!session?.user?.id) {
     return {
       success: false,
@@ -143,58 +151,100 @@ export async function getWeeklyStats(
   }
 
   try {
+    // 本日の開始・終了時刻を計算
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
+    // 本日の記録を取得して集計
     const records = await prisma.record.findMany({
       where: {
         userId: session.user.id,
         startTime: {
-          gte: weekStart,
-          lte: weekEnd,
+          gte: todayStart,
+          lte: todayEnd,
         },
       },
       select: {
-        startTime: true,
         duration: true,
       },
     });
 
-    // 日別に集計
-    const dailyMap = new Map<string, { totalMinutes: number; count: number }>();
-
-    records.forEach((record) => {
-      const date = record.startTime.toISOString().split('T')[0]; // YYYY-MM-DD
-      const existing = dailyMap.get(date) || { totalMinutes: 0, count: 0 };
-      dailyMap.set(date, {
-        totalMinutes: existing.totalMinutes + record.duration,
-        count: existing.count + 1,
-      });
-    });
-
-    const dailyStats: DailyStats[] = Array.from(dailyMap.entries()).map(
-      ([date, data]) => ({
-        date,
-        totalMinutes: data.totalMinutes,
-        recordCount: data.count,
-      })
-    );
-
-    dailyStats.sort((a, b) => a.date.localeCompare(b.date));
-
-    const totalMinutes = records.reduce((sum, r) => sum + r.duration, 0);
+    const totalMinutes = records.reduce((sum, record) => sum + record.duration, 0);
+    const recordCount = records.length;
 
     return {
       success: true,
       stats: {
-        weekStart,
-        weekEnd,
         totalMinutes,
-        dailyStats,
+        recordCount,
       },
     };
   } catch (error) {
-    console.error('週単位統計の取得に失敗しました：', error);
+    console.error('本日のサマリー取得に失敗しました：', error);
     return {
       success: false,
-      error: '週単位統計の取得に失敗しました',
+      error: '本日のサマリー取得に失敗しました',
     };
   }
 }
+
+/**
+ * 作業記録を削除する
+ */
+export async function deleteRecord(
+  recordId: string
+): Promise<{
+  success: boolean;
+  error?: string;
+}> {
+  const session = await auth();
+
+  // 未ログインの場合はエラー
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      error: 'ログインが必要です',
+    };
+  }
+
+  try {
+    // 自分の記録のみ削除可能
+    const record = await prisma.record.findUnique({
+      where: { id: recordId },
+      select: { userId: true },
+    });
+
+    if (!record) {
+      return {
+        success: false,
+        error: '記録が見つかりません',
+      };
+    }
+
+    if (record.userId !== session.user.id) {
+      return {
+        success: false,
+        error: '削除権限がありません',
+      };
+    }
+
+    await prisma.record.delete({
+      where: { id: recordId },
+    });
+
+    // キャッシュを無効化
+    revalidatePath('/records');
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error('作業記録の削除に失敗しました：', error);
+    return {
+      success: false,
+      error: '作業記録の削除に失敗しました',
+    };
+  }
+}
+

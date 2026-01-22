@@ -37,9 +37,9 @@ export async function getSettings(): Promise<Settings | null> {
 
   // データベースの設定を返す
   return {
-    focusTime: userSettings.focusTime,
-    breakTime: userSettings.breakTime,
-    longBreakTime: userSettings.longBreakTime,
+    focusTime: userSettings.focusDuration,
+    breakTime: userSettings.shortBreak,
+    longBreakTime: userSettings.longBreak,
     pomodorosUntilLongBreak: userSettings.pomodorosUntilLongBreak,
     soundEnabled: userSettings.soundEnabled,
   };
@@ -81,17 +81,17 @@ export async function saveSettings(settings: Settings): Promise<{
         userId: session.user.id,
       },
       update: {
-        focusTime: settings.focusTime,
-        breakTime: settings.breakTime,
-        longBreakTime: settings.longBreakTime,
+        focusDuration: settings.focusTime,
+        shortBreak: settings.breakTime,
+        longBreak: settings.longBreakTime,
         pomodorosUntilLongBreak: settings.pomodorosUntilLongBreak,
         soundEnabled: settings.soundEnabled,
       },
       create: {
         userId: session.user.id,
-        focusTime: settings.focusTime,
-        breakTime: settings.breakTime,
-        longBreakTime: settings.longBreakTime,
+        focusDuration: settings.focusTime,
+        shortBreak: settings.breakTime,
+        longBreak: settings.longBreakTime,
         pomodorosUntilLongBreak: settings.pomodorosUntilLongBreak,
         soundEnabled: settings.soundEnabled,
       },
