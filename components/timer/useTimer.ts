@@ -1,15 +1,33 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/contexts/SessionContext';
+import { useSettings } from '@/contexts/SettingsContext';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
 import { useNotificationSound } from '@/hooks/useNotificationSound';
 
+const SECONDS = 60;
+
 export const useTimer = (
   timerType: TimerType,
-  initialTime: number,
   autoStart: boolean = false
 ) => {
+  const { settings } = useSettings();
+
+  // timerTypeに応じて初期時間を計算
+  const initialTime = useMemo(() => {
+    switch (timerType) {
+      case 'focus':
+        return SECONDS * settings.focusTime;
+      case 'break':
+        return SECONDS * settings.breakTime;
+      case 'long-break':
+        return SECONDS * settings.longBreakTime;
+      default:
+        return SECONDS * settings.focusTime;
+    }
+  }, [timerType, settings.focusTime, settings.breakTime, settings.longBreakTime]);
+
   const [timeLeft, setTimeLeft] = useState(initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
   const [isRunning, setIsRunning] = useState(autoStart);
@@ -31,14 +49,14 @@ export const useTimer = (
     setIsRunning((prev) => {
       const newState = !prev;
 
-      // タイマー開始時に現在時刻を記録（初回のみ）
-      // 一時停止→再開の場合は記録しない
-      if (newState && !startTimeRef.current) {
-        startTimeRef.current = new Date();
-      }
-
-      // 一度でも開始したらhasStartedをtrueに
+      // タイマー開始時の処理
       if (newState) {
+        // まだ開始時刻が記録されていない場合のみ現在時刻を記録
+        if (!startTimeRef.current) {
+          startTimeRef.current = new Date();
+        }
+
+        // 一度でも開始したらhasStartedをtrueに
         setHasStarted(true);
       }
 
@@ -55,6 +73,13 @@ export const useTimer = (
     startTimeRef.current = null;
   }, [initialTime]);
 
+  // initialTimeが変更された場合（設定変更時など）、タイマーが停止中で未開始の場合はtimeLeftを更新
+  useEffect(() => {
+    if (!isRunning && !hasStarted) {
+      setTimeLeft(initialTime);
+    }
+  }, [initialTime, isRunning, hasStarted]);
+
   /**
    * autoStart=true の場合、初回マウント時に開始時刻を記録
    */
@@ -65,31 +90,6 @@ export const useTimer = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // クエリパラメーターのクリーンアップ用のRef（一度だけ実行するため）
-  const hasCleanedUrlRef = useRef(false);
-
-  useEffect(() => {
-    // 初回マウント時のみURLからクエリパラメーターを削除
-    if (hasCleanedUrlRef.current) return;
-
-    hasCleanedUrlRef.current = true;
-
-    switch (timerType) {
-      case 'focus':
-        router.replace('/');
-        break;
-      case 'break':
-        router.replace('/timer/break');
-        break;
-      case 'long-break':
-        router.replace('/timer/long-break');
-        break;
-      default:
-        router.replace('/');
-        break;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -155,6 +155,7 @@ export const useTimer = (
     sessionCount,
     maxSessions,
     timeLeft,
+    initialTime,
     isRunning,
     hasStarted,
     startTimeRef,
