@@ -6,9 +6,24 @@ import { revalidatePath } from 'next/cache';
 import type {
   CreateRecordInput,
   GetRecordsOptions,
-  Record,
+  FormattedRecord,
   TodayStats,
 } from '@/types/record';
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+};
+
+const formatTime = (date: Date) => {
+  return date.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
 
 /**
  * 作業記録を作成する
@@ -65,7 +80,7 @@ export async function getRecords(
 ): Promise<{
   success: boolean;
   error?: string;
-  records?: Record[];
+  records?: FormattedRecord[];
 }> {
   const session = await auth();
 
@@ -96,9 +111,17 @@ export async function getRecords(
       take: options?.limit || undefined,
     });
 
+    const formattedRecords = records.map((record) => ({
+      id: record.id,
+      date: formatDate(record.startTime),
+      startTime: formatTime(record.startTime),
+      endTime: formatTime(record.endTime),
+      duration: record.duration,
+    }));
+
     return {
       success: true,
-      records,
+      records: formattedRecords,
     };
   } catch (error) {
     console.error('作業記録の取得に失敗しました：', error);
@@ -224,3 +247,4 @@ export async function deleteRecord(
     };
   }
 }
+

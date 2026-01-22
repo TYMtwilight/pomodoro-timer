@@ -1,25 +1,8 @@
 import { getRecords, getTodayStats } from '@/app/actions/records';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import type { Record } from '@/types/record';
 import Link from 'next/link';
-
-const formatDate = (date: Date) => {
-  const d = new Date(date);
-  return d.toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
-};
-
-const formatTime = (date: Date) => {
-  const d = new Date(date);
-  return d.toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
+import { RecordList } from '@/components/records/RecordList';
 
 /**
  * 総作業時間を時間と分の形式にフォーマット
@@ -63,7 +46,7 @@ export default async function RecordsPage() {
     );
   }
 
-  const records: Record[] | undefined = result.records || [];
+  const records = result.records || [];
 
   // 本日のサマリー（Server Actionで集計済み）
   const todayTotalMinutes = statsResult.success && statsResult.stats ? statsResult.stats.totalMinutes : 0;
@@ -87,34 +70,9 @@ export default async function RecordsPage() {
           </div>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 text-gray-300">最近の記録</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-300">本日の記録</h2>
 
-        {records.length === 0 ? (
-          <p className="text-gray-400">まだ作業記録がありません</p>
-        ) : (
-          <div className="space-y-4">
-            {records.map((record) => (
-              <div
-                key={record.id}
-                className="bg-gray-900 rounded-lg p-4 border border-gray-800"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-sm text-gray-400">
-                      {formatDate(record.startTime)}
-                    </p>
-                    <p className="text-lg font-semibold mt-1">
-                      {formatTime(record.startTime)} - {formatTime(record.endTime)}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold">{record.duration}分</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <RecordList records={records} />
 
         <div className="mt-8">
           <Link
