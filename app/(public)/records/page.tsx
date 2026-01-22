@@ -1,9 +1,8 @@
-import { getRecords } from '@/app/actions/records';
+import { getRecords, getTodayStats } from '@/app/actions/records';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import type { Record } from '@/types/record';
 import Link from 'next/link';
-import { startOfDay, endOfDay } from 'date-fns';
 
 const formatDate = (date: Date) => {
   const d = new Date(date);
@@ -44,17 +43,17 @@ export default async function RecordsPage() {
 
   // 本日の日付範囲を計算
   const today = new Date();
-  const todayStart = startOfDay(today);
-  const todayEnd = endOfDay(today);
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+  const todayEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
 
-  // 本日の記録を取得（サマリー用）
-  const todayResult = await getRecords({
+  // 本日のサマリーを取得
+  const statsResult = await getTodayStats();
+
+  // 本日の記録を取得（一覧表示用）
+  const result = await getRecords({
     from: todayStart,
     to: todayEnd,
   });
-
-  // 最新20件の記録を取得（一覧表示用）
-  const result = await getRecords({ limit: 20 });
 
   if (!result.success) {
     return (
@@ -65,10 +64,10 @@ export default async function RecordsPage() {
   }
 
   const records: Record[] | undefined = result.records || [];
-  const todayRecords: Record[] = todayResult.success ? (todayResult.records || []) : [];
-  
-  // 本日の総作業時間を計算（分単位）
-  const todayTotalMinutes = todayRecords.reduce((sum, record) => sum + record.duration, 0);
+
+  // 本日のサマリー（Server Actionで集計済み）
+  const todayTotalMinutes = statsResult.success && statsResult.stats ? statsResult.stats.totalMinutes : 0;
+  const todayRecordCount = statsResult.success && statsResult.stats ? statsResult.stats.recordCount : 0;
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
@@ -83,7 +82,7 @@ export default async function RecordsPage() {
               {formatTotalDuration(todayTotalMinutes)}
             </span>
             <span className="text-gray-400">
-              （{todayRecords.length}回のポモドーロ）
+              （{todayRecordCount}回のポモドーロ）
             </span>
           </div>
         </div>

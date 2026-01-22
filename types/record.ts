@@ -29,58 +29,9 @@ export interface Record {
 }
 
 /**
- * 日別の作業統計
+ * 本日の作業サマリー
  */
-export interface DailyStats {
-  date: string;  // YYYY-MM-DD
+export interface TodayStats {
   totalMinutes: number;
   recordCount: number;
 }
-
-/**
- * 月別の作業統計（年単位表示用）
- */
-export interface MonthlyStats {
-  month: string;  // YYYY-MM
-  totalMinutes: number;
-  recordCOunt: number;
-}
-
-/**
- * 週単位の統計データ
- */
-export interface WeeklyStats {
-  weekStart: Date;
-  weekEnd: Date;
-  totalMinutes: number;
-  dailyStats: DailyStats[];
-}
-
-/**
- * 月単位の統計データ
- */
-export interface MonthlyStatsDetail {
-  monthStart: Date;
-  monthEnd: Date;
-  totalMinutes: number;
-  dailyStats: DailyStats[];
-}
-
-/**
- * 年単位の統計データ
- */
-export interface YearlyStats {
-  yearStart: Date;
-  yearEnd: Date;
-  totalMinutes: number;
-  monthlyStats: MonthlyStats[];
-}
-
-/**
- * 期間別統計の共通型
- */
-export type PeriodStats = {
-  period: 'week' | 'month' | 'year';
-  totalMinutes: number;
-  stats: DailyStats[] | MonthlyStats[];
-};
