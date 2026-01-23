@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSession } from '@/contexts/SessionContext';
 import { useSettings } from '@/contexts/SettingsContext';
+import { useTimerState } from '@/contexts/TimerStateContext';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
 import { useNotificationSound } from '@/components/timer/useNotificationSound';
@@ -13,6 +14,7 @@ export const useTimer = (
   onComplete?: () => void
 ) => {
   const { settings } = useSettings();
+  const { getSavedState, saveTimerState, clearTimerState } = useTimerState();
 
   // timerTypeに応じて初期時間を計算
   const initialTime = useMemo(() => {
@@ -28,18 +30,26 @@ export const useTimer = (
     }
   }, [timerType, settings.focusTime, settings.breakTime, settings.longBreakTime]);
 
-  const [timeLeft, setTimeLeft] = useState(initialTime);
+  // 保存された状態を取得
+  const savedState = getSavedState(timerType);
+
+  // 保存された状態があればそれを使用、なければ初期値
+  const [timeLeft, setTimeLeft] = useState(savedState?.timeLeft ?? initialTime);
   // autoStartがtrueの場合は自動でカウントダウンがスタートする
-  const [isRunning, setIsRunning] = useState(autoStart);
+  const [isRunning, setIsRunning] = useState(savedState?.isRunning ?? autoStart);
   // 一度でもタイマーが開始されたかどうか（SETTINGS/RESET切り替え用）
-  const [hasStarted, setHasStarted] = useState(autoStart);
+  const [hasStarted, setHasStarted] = useState(savedState?.hasStarted ?? autoStart);
 
   // タイマー開始時刻を記録（作業記録用）
-  const startTimeRef = useRef<Date | null>(null);
+  const startTimeRef = useRef<Date | null>(savedState?.startTime ?? null);
 
   // setIntervalのIDを保存するためのRef
   // useRefを使う理由：再レンダリングを引き起こさず、コンポーネントのライフサイクル全体で同じ値を保持できるため
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // アンマウント時に最新の状態を保存するためのRef
+  const stateRef = useRef({ timeLeft, isRunning, hasStarted });
+
   const { sessionCount, maxSessions } = useSession();
   const { playNotificationSound } = useNotificationSound();
 
@@ -70,7 +80,15 @@ export const useTimer = (
 
     // リセット時は開始時刻もクリア
     startTimeRef.current = null;
-  }, [initialTime]);
+
+    // 保存された状態もクリア
+    clearTimerState();
+  }, [initialTime, clearTimerState]);
+
+  // 最新の状態をrefに保存（アンマウント時に参照するため）
+  useEffect(() => {
+    stateRef.current = { timeLeft, isRunning, hasStarted };
+  }, [timeLeft, isRunning, hasStarted]);
 
   // initialTimeが変更された場合（設定変更時など）、タイマーが停止中で未開始の場合はtimeLeftを更新
   useEffect(() => {
@@ -80,12 +98,33 @@ export const useTimer = (
   }, [initialTime, isRunning, hasStarted]);
 
   /**
-   * autoStart=true の場合、初回マウント時に開始時刻を記録
+   * 初回マウント時の処理とアンマウント時の状態保存
    */
   useEffect(() => {
+    // マウント時：autoStart=true の場合、開始時刻を記録
     if (autoStart && !startTimeRef.current) {
       startTimeRef.current = new Date();
     }
+
+    // マウント時：保存された状態から復元した場合、保存状態をクリア
+    if (savedState) {
+      clearTimerState();
+    }
+
+    // アンマウント時：タイマーが実行中または開始済みの場合は状態を保存
+    return () => {
+      const currentState = stateRef.current;
+      // タイマーが実行中または開始済みの場合のみ保存
+      if (currentState.isRunning || currentState.hasStarted) {
+        saveTimerState({
+          timerType,
+          timeLeft: currentState.timeLeft,
+          isRunning: currentState.isRunning,
+          hasStarted: currentState.hasStarted,
+          startTime: startTimeRef.current,
+        });
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
