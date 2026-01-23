@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSettings } from '@/contexts/SettingsContext';
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Minus, Plus } from 'lucide-react';
 
@@ -80,16 +80,16 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-72px)] bg-black text-white">
+      <div className="flex items-center justify-center h-[calc(100vh-72px)] gap-8 bg-black text-white py-4">
         <div className="text-xl">読み込み中...</div>
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-72px)] bg-black text-white p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4">設定</h1>
+    <div className="flex flex-col items-center justify-center h-[calc(100vh-72px)] bg-black text-white p-4">
+      <div className="w-full max-w-md">
+        <h1 className="text-3xl font-bold">設定</h1>
 
         <div className="space-y-3">
           {/* フォーカス時間 */}
@@ -208,25 +208,33 @@ export default function SettingsPage() {
             />
           </div>
         </div>
-
-        {/* ボタン */}
-        <div className="flex gap-4 w-full mt-6">
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex-1 h-14 bg-blue-700 hover:bg-blue-400 text-white font-semibold rounded-lg border transition-all duration-200 active:scale-95 disabled:opacity-50"
-          >
-            {isSaving ? '設定中...' : '設定'}
-          </Button>
-          <Link href="/" className="flex-1">
+        <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 p-6">
+      {/* 左: キャンセルボタン */}
+      <div className="basis-[40%]">
+        <div className="min-w-max">
+          <Link href="/">
             <Button
               variant="outline"
-              className="w-full h-14 rounded-lg border border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+              className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold text-md transition-all duration-200 active:scale-95"
+              aria-label="キャンセルする"
             >
-              キャンセル
+              キャンセルする
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* 右: 設定ボタン */}
+      <div className="flex-1 transition-all duration-500 ease-out">
+        <Button
+        onClick={handleSave}
+        disabled={isSaving}
+          className="h-14 w-full rounded-lg bg-blue-700 hover:bg-blue-500 text-white font-semibold text-md transition-all duration-200 active:scale-95"
+        >
+          {isSaving ? '設定中...' : '設定する'}
+        </Button>
+      </div>
+    </div>
       </div>
     </div>
   );
