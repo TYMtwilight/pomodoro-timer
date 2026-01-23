@@ -47,7 +47,7 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
 
   return (
     <div className="absolute inset-0 flex justify-center items-center" >
-      <div className={`absolute z-10 ${orbitron.className}`}>
+      <div className={`absolute ${orbitron.className} z-10`}>
         <span
           className="text-5xl text-white tabular-nums"
           style={{

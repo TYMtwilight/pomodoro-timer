@@ -61,7 +61,7 @@ export function TimerPage({ timerType }: TimerPageProps) {
 
   return (
     <div className="flex flex-col items-center h-[calc(100vh-56px)] bg-black text-white"> 
-      <TimerLabel timerType={timerType} />
+      <TimerLabel timerType={timerType} isRunning={isRunning} />
       <TimerDisplay timeLeft={timeLeft} initialTime={initialTime} sessionCount={sessionCount} maxSessions={maxSessions} />
       <TimerControls
         isRunning={isRunning}
