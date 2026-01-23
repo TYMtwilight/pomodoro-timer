@@ -47,18 +47,25 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
 
   return (
     <div className="absolute inset-0 flex justify-center items-center" >
-      <div className={`absolute ${orbitron.className} z-10`}>
+      <div className={`absolute ${orbitron.className} z-10 flex items-center`}>
         <span
-          className="text-5xl text-white tabular-nums"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[2ch]"
           style={{
             textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
         >
           {minutes}
         </span>
-        <span className="text-4xl text-white tabular-nums mx-2">:</span>
+        <span 
+          className="text-5xl font-bold text-white tabular-nums mx-2 inline-block"
+          style={{
+            textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          :
+        </span>
         <span
-          className="text-5xl text-white tabular-nums"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-left min-w-[2ch]"
           style={{
             textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
