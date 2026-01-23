@@ -3,7 +3,7 @@ import { useSession } from '@/contexts/SessionContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
-import { useNotificationSound } from '@/hooks/useNotificationSound';
+import { useNotificationSound } from '@/components/timer/useNotificationSound';
 
 const SECONDS = 60;
 
