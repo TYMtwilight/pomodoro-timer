@@ -55,10 +55,10 @@ export function RecordList({ records }: RecordListProps) {
         return (
           <div
             key={record.id}
-            className="bg-gray-900 rounded-lg p-4 border border-gray-800"
+            className="bg-gray-900 rounded-lg px-8 py-2 border border-gray-800"
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+            
+              <div className="flex gap-4">
                 <p className="text-sm text-gray-400">
                   {record.date}
                 </p>
@@ -66,16 +66,15 @@ export function RecordList({ records }: RecordListProps) {
                   {record.startTime} - {record.endTime}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <p className="text-2xl font-bold">{record.duration}分</p>
-
+              <div className="flex items-center h-10 gap-4">
+                <p className="text-2xl font-bold h-8">{record.duration}分</p>
                 {isConfirming ? (
                   // 削除確認中の場合、削除ボタンとキャンセルボタンを表示する
-                  <div className="flex gap-2">
+                  <div className="flex gap-4">
                     <button
                       onClick={() => handleConfirmDelete(record.id)}
                       disabled={isDeleting}
-                      className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 rounded disabled:opacity-50"
+                      className="px-3 py-1 text-sm  bg-red-600 hover:bg-red-700 rounded disabled:opacity-50"
                     >
                       {isDeleting ? '削除中...' : '削除'}
                     </button>
@@ -90,14 +89,14 @@ export function RecordList({ records }: RecordListProps) {
                 ) : (
                   <button
                     onClick={() => handleDeleteClick(record.id)}
-                    className="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-800 rounded transition-colors"
+                    className="p-2 hover:bg-gray-800 rounded transition-colors"
                     aria-label="記録を削除"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5 text-red-400" />
                   </button>
                 )}
               </div>
-            </div>
+
           </div>
         );
       })}
