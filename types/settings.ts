@@ -23,7 +23,7 @@ export const settingsSchema = z.object({
     .number()
     .int()
     .min(1, 'う～ん、1分未満はちょっと短すぎませんか？')
-    .max(69, 'あっ！90分超えるのはやりすぎですよ！'),
+    .max(90, 'あっ！90分超えるのはやりすぎですよ！'),
   pomodorosUntilLongBreak: z
     .number()
     .int()
