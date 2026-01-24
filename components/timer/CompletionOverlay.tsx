@@ -39,16 +39,7 @@ interface CompletionOverlayProps {
 export function CompletionOverlay({ timerType, onExit, onStartNext }: CompletionOverlayProps) {
   const [todayTotalMinutes, setTodayTotalMinutes] = useState(0);
   const [todayRecordCount, setTodayRecordCount] = useState(0);
-  const { sessionCount, incrementSession, resetSession } = useSession();
-
-  useEffect(() => {
-    if (timerType === 'focus') {
-      incrementSession();
-    } else if (timerType === 'long-break') {
-      resetSession();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerType]);
+  const { sessionCount, maxSessions } = useSession();
 
   useEffect(() => {
     const fetchTodayStats = async () => {
@@ -62,7 +53,7 @@ export function CompletionOverlay({ timerType, onExit, onStartNext }: Completion
   }, []);
 
   // 現在のセッション数と完了したタイマータイプから次のタイマータイプを決定
-  const nextTimerType = getNextTimerType(timerType, sessionCount);
+  const nextTimerType = getNextTimerType(timerType, sessionCount, maxSessions);
   const nextTimerLabel = TIMER_LABELS[nextTimerType];
 
   const handleStartNext = () => {

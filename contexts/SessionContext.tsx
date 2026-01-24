@@ -14,7 +14,7 @@ interface SessionContextType {
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [sessionCount, setSessionCount] = useState(1);
+  const [sessionCount, setSessionCount] = useState(0);
   const { settings } = useSettings();
   const maxSessions = settings.pomodorosUntilLongBreak;
 

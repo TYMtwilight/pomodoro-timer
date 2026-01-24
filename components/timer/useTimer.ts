@@ -51,13 +51,13 @@ export const useTimer = (
   // アンマウント時に最新の状態を保存するためのRef
   const stateRef = useRef({ timeLeft, isRunning, hasStarted });
 
-  const { sessionCount, maxSessions } = useSession();
+  const { sessionCount, maxSessions, incrementSession, resetSession } = useSession();
 
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
     setIsRunning((prev) => {
       const newState = !prev;
-
+      console.log('current session count is', sessionCount);
       // タイマー開始時の処理
       if (newState) {
         // まだ開始時刻が記録されていない場合のみ現在時刻を記録
@@ -150,7 +150,7 @@ export const useTimer = (
         // タイマーの状態をクリア
         clearTimerState();
 
-        // focusタイマーの場合のみ作業記録を保存
+        // focusタイマーの場合のみ作業記録を保存 & セッション数をインクリメント
         if (timerType === 'focus' && startTimeRef.current) {
           const endTime = new Date();
           const durationMinutes = Math.floor(initialTime / 60);
@@ -162,12 +162,17 @@ export const useTimer = (
               duration: durationMinutes,
             });
             console.log('作業記録を保存しました');
+            // セッション数をインクリメント
+            incrementSession();
           } catch (error) {
             console.error('作業記録の保存に失敗：', error);
           } finally {
             // 開始時刻をクリア
             startTimeRef.current = null;
           }
+        } else if (timerType === 'long-break') {
+          // long-breakタイマー完了時はセッションをリセット
+          resetSession();
         }
       };
 
