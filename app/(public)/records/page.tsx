@@ -1,7 +1,6 @@
 import { getRecords, getTodayStats } from '@/app/actions/records';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { RecordList } from '@/components/records/RecordList';
 import { BackButton } from '@/components/records/BackButton';
 
@@ -44,8 +43,8 @@ export default async function RecordsPage() {
 
   if (!result.success) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <p className="text-red-500">{result.error || '記録の取得に失敗しました'}</p>
+      <div className="flex items-center justify-center absolute top-0 left-0 w-full h-full bg-black text-white">
+        <p className="text-2xl text-white">{result.error || '記録の取得に失敗しました'}</p>
       </div>
     );
   }
@@ -57,12 +56,11 @@ export default async function RecordsPage() {
   const todayRecordCount = statsResult.success && statsResult.stats ? statsResult.stats.recordCount : 0;
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="flex justify-center items-center h-[calc(100vh-56px)] bg-black text-white p-8">
+      <div className="w-full max-w-md h-full relative">
         <h1 className="text-3xl font-bold mb-8">作業記録</h1>
-
         {/* 本日のサマリー */}
-        <div className="bg-linear-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 mb-8 border border-blue-800/50">
+        <div className="bg-linear-to-r from-blue-950/40 to-purple-700/50 rounded-xl p-6 mb-8 border border-blue-800/50">
           <h2 className="text-lg font-medium text-gray-300 mb-2">本日のサマリー</h2>
           <div className="flex items-baseline gap-2">
             <span 
@@ -80,17 +78,17 @@ export default async function RecordsPage() {
                 style={{
                   textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
                 }}
-              >{todayRecordCount}</span>
-              
+              >
+                {todayRecordCount}
+              </span>    
             </span>
           </div>
         </div>
-
-        <h2 className="text-xl font-semibold mb-4 text-gray-300">本日の記録</h2>
-
-        <RecordList records={records} />
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl font-semibold mb-4 text-gray-300">本日の記録</h2>
+          <RecordList records={records} />
+        </div>
       </div>
-
       {/* 固定戻るボタン */}
       <BackButton />
     </div>
