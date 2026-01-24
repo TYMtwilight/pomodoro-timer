@@ -111,11 +111,9 @@ export const useTimer = (
       clearTimerState();
     }
 
-    // アンマウント時：タイマーが実行中または開始済みの場合は状態を保存
+    // アンマウント時：タイマーの状態を保存
     return () => {
       const currentState = stateRef.current;
-      // タイマーが実行中または開始済みの場合のみ保存
-      if (currentState.isRunning || currentState.hasStarted) {
         saveTimerState({
           timerType,
           timeLeft: currentState.timeLeft,
@@ -123,7 +121,6 @@ export const useTimer = (
           hasStarted: currentState.hasStarted,
           startTime: startTimeRef.current,
         });
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
