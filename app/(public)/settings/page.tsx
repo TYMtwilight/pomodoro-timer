@@ -208,7 +208,7 @@ export default function SettingsPage() {
             />
           </div>
         </div>
-        <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 p-8 left-0">
+        <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 py-8 left-0">
           {/* 左: キャンセルボタン */}
           <div className="basis-[40%]">
             <div className="min-w-max">
