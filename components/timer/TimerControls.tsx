@@ -32,7 +32,7 @@ export const TimerControls = memo(function TimerControls({
         <Link href="/settings" className="block w-full">
           <Button
             variant="outline"
-            className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+            className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
             aria-label="設定を開く"
           >
             <Settings className="w-5 h-5 mr-2" />
@@ -45,7 +45,7 @@ export const TimerControls = memo(function TimerControls({
     return (
       <Button
         variant="outline"
-        className="h-14 w-full rounded-lg border-1 border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
+        className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold transition-all duration-200 active:scale-95"
         onClick={onReset}
         aria-label="タイマーをリセット"
       >
@@ -56,13 +56,13 @@ export const TimerControls = memo(function TimerControls({
   };
 
   return (
-    <div className="flex gap-4 w-full max-w-md px-4">
+    <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 p-8">
       {/* 左: SETTINGS または RESET */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-out ${isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         style={{
-          flexBasis: isRunning ? '0%' : '50%',
+          flexBasis: isRunning ? '0%' : '40%',
           flexShrink: 0,
           flexGrow: 0,
         }}

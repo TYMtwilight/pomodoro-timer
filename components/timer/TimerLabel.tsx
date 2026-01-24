@@ -1,20 +1,31 @@
-'use client';
 import { TimerType } from '@/types/timerType';
-import { BreakTypeLabel } from './BreakTypeLabel';
 
 interface TimerLabelProps {
   timerType: TimerType;
+  isRunning: boolean;
 }
 
-export function TimerLabel({ timerType }: TimerLabelProps) {
-  if (timerType === 'focus') {
-    return (
-      <div className="flex flex-col items-center justify-center w-[80%] sm:w-[30%] py-2 bg-gray-900 rounded-3xl">
-        <div className="h-5"></div>
-        <span className="text-xl font-medium text-white">集中！</span>
-        <div className="h-5"></div>
-      </div>
-    );
-  }
-  return <BreakTypeLabel timerType={timerType} />;
+const TIMER_LABELS = {
+  focus: 'FOCUS',
+  break: 'BREAK',
+  'long-break': 'LONG BREAK',
+} as const;
+
+export function TimerLabel({ timerType, isRunning }: TimerLabelProps) {
+
+  const timerLabel = TIMER_LABELS[timerType];
+
+  return (
+    <div
+      className={`
+        absolute z-10 top-1/5 text-4xl tracking-wider font-bold
+        transition-all duration-200 ease-out
+        ${isRunning ? 'text-white drop-shadow-blue-100' : 'text-gray-600'}
+
+      `}
+      style={isRunning ? { textShadow: '0 0 16px #3b82f6, 0 0 32px #3b82f6' } : undefined}
+    >
+      {timerLabel}
+    </div>
+  )
 }
