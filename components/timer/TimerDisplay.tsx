@@ -43,19 +43,32 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
   const strokeDashoffset = CIRCUMFERENCE * progress;
 
   const { minutes, seconds } = formatTime(timeLeft);
+  const minutesLabel1 = minutes.slice(0, 1);
+  const minutesLabel2 = minutes.slice(1);
+  const secondsLabel1 = seconds.slice(0, 1);
+  const secondsLabel2 = seconds.slice(1);
 
 
   return (
     <div className="absolute inset-0 flex justify-center items-center" >
       <div className={`absolute ${orbitron.className} z-10 flex items-center`}>
         <span
-          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[2ch]"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
           style={{
             textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
         >
-          {minutes}
+          {minutesLabel1}
         </span>
+        <span
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
+          style={{
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          {minutesLabel2}
+        </span>
+        
         <span 
           className="text-5xl font-bold text-white tabular-nums mx-2 inline-block"
           style={{
@@ -65,12 +78,20 @@ export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
           :
         </span>
         <span
-          className="text-5xl font-bold text-white tabular-nums inline-block text-left min-w-[2ch]"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
           style={{
-            textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
         >
-          {seconds}
+          {secondsLabel1}
+        </span>
+        <span
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
+          style={{
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          {secondsLabel2}
         </span>
       </div>
       <svg width={SVG_WIDTH} height={SVG_HEIGHT} className="transform -rotate-90">
