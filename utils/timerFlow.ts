@@ -5,11 +5,12 @@ import { TimerType } from '@/types/timerType';
  */
 export function getNextTimerType(
   currentTimerType: TimerType,
-  sessionCount: number
+  sessionCount: number,
+  maxSessions: number
 ): TimerType {
   if (currentTimerType === 'focus') {
     // 4セッション目の作業完了後はlong-break
-    return sessionCount >= 4 ? 'long-break' : 'break';
+    return sessionCount >= maxSessions ? 'long-break' : 'break';
   }
   if (currentTimerType === 'break' || currentTimerType === 'long-break') {
     return 'focus';
