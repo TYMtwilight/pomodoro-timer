@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { RecordList } from '@/components/records/RecordList';
-import { ArrowLeft } from 'lucide-react';
+import { BackButton } from '@/components/records/BackButton';
 
 const BLUE_300 = '#9db7f9';
 const BLUE_500 = '#4979f5';
@@ -92,13 +92,7 @@ export default async function RecordsPage() {
       </div>
 
       {/* 固定戻るボタン */}
-      <Link
-        href="/"
-        className="fixed bottom-8 right-8 flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg z-50"
-        aria-label="タイマーに戻る"
-      >
-        <ArrowLeft className="w-6 h-6 text-white" />
-      </Link>
+      <BackButton />
     </div>
   );
 }

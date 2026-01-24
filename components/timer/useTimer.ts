@@ -111,9 +111,10 @@ export const useTimer = (
       clearTimerState();
     }
 
-    // アンマウント時：タイマーの状態を保存
     return () => {
       const currentState = stateRef.current;
+      // アンマウント時：タイマーの残り時間が０より大きい場合はタイマーの状態を保存
+      if (currentState.timeLeft > 0) {
         saveTimerState({
           timerType,
           timeLeft: currentState.timeLeft,
@@ -121,6 +122,10 @@ export const useTimer = (
           hasStarted: currentState.hasStarted,
           startTime: startTimeRef.current,
         });
+      } else {
+        // アンマウント時：タイマーの残り時間が０の場合はタイマーの状態をクリア
+        clearTimerState();
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -144,6 +149,9 @@ export const useTimer = (
       const handleTimerComplete = async () => {
         // 通知音を再生し、再生完了を待つ
         await playNotificationSound();
+
+        // タイマーの状態をクリア
+        clearTimerState();
 
         // focusタイマーの場合のみ作業記録を保存
         if (timerType === 'focus' && startTimeRef.current) {
