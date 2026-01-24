@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useSettings } from '@/contexts/SettingsContext';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { Minus, Plus } from 'lucide-react';
 
 const MIN_TIME = 5;
 const MAX_TIME = 90;
 const TIME_STEP = 5;
 
-const MIN_POMODOROS = 1;
+const MIN_POMODOROS = 2;
 const MAX_POMODOROS = 10;
 
 export default function SettingsPage() {
@@ -66,7 +65,7 @@ export default function SettingsPage() {
 
       if (result.success) {
         // 設定成功したらホームに戻る
-        router.push('/');
+        router.back();
       } else {
         alert(result.error || '設定に失敗しました');
       }
@@ -208,19 +207,18 @@ export default function SettingsPage() {
             />
           </div>
         </div>
-        <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 py-8 left-0">
+        <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 py-8">
           {/* 左: キャンセルボタン */}
           <div className="basis-[40%]">
             <div className="min-w-max">
-              <Link href="/">
-                <Button
-                  variant="outline"
-                  className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold text-md transition-all duration-200 active:scale-95"
-                  aria-label="キャンセルする"
-                >
-                  キャンセルする
-                </Button>
-              </Link>
+              <Button
+                variant="outline"
+                className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold text-md transition-all duration-200 active:scale-95"
+                aria-label="キャンセルする"
+                onClick={() => router.back()}
+              >
+                キャンセルする
+              </Button>
             </div>
           </div>
 
