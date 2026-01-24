@@ -12,23 +12,23 @@ export const settingsSchema = z.object({
   focusTime: z
     .number()
     .int()
-    .min(1, 'う～ん、1分未満はちょっと短すぎませんか？')
+    .min(5, 'う～ん、5分未満はちょっと短すぎませんか？')
     .max(90, 'あっ！90分超えるのはやりすぎですよ！'),
   breakTime: z
     .number()
     .int()
-    .min(1, 'う～ん、1分未満はちょっと短すぎませんか？')
-    .max(30, 'あっ！30分超えるのはやりすぎですよ！'),
+    .min(5, 'う～ん、5分未満はちょっと短すぎませんか？')
+    .max(90, 'あっ！90分超えるのはやりすぎですよ！'),
   longBreakTime: z
     .number()
     .int()
     .min(1, 'う～ん、1分未満はちょっと短すぎませんか？')
-    .max(60, 'あっ！60分超えるのはやりすぎですよ！'),
+    .max(90, 'あっ！90分超えるのはやりすぎですよ！'),
   pomodorosUntilLongBreak: z
     .number()
     .int()
     .min(2, '集中する回数は2回以上でお願いします！')
-    .max(8, '集中する回数は8回以下でお願いします！'),
+    .max(10, '集中する回数は10回以下でお願いします！'),
   soundEnabled: z.boolean(),
 });
 

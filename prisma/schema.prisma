@@ -28,7 +28,6 @@ model User {
   sessions      Session[]
 
   // アプリケーション リレーション
-  tasks         Task[]
   settings      Setting?
   records       Record[]
 
@@ -78,30 +77,12 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-// 作業項目
-model Task {
-  id          String    @id @default(cuid())
-  userId      String    @map("user_id")
-  name        String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  deletedAt   DateTime? @map("deleted_at") // 論理削除
-
-  // リレーション
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  records     Record[]
-
-  @@index([userId])
-  @@index([deletedAt])
-  @@map("tasks")
-}
-
 // タイマー設定
 model Setting {
   userId                    String   @id @map("user_id")
-  focusTime                 Int      @default(25) @map("focus_duration") // 分
-  breakTime                 Int      @default(5) @map("short_break") // 分
-  longBreakTime             Int      @default(15) @map("long_break") // 分
+  focusDuration             Int      @default(25) @map("focus_duration") // 分
+  shortBreak                Int      @default(5) @map("short_break") // 分
+  longBreak                 Int      @default(15) @map("long_break") // 分
   pomodorosUntilLongBreak   Int      @default(4) @map("pomodoros_until_long_break")
   soundEnabled              Boolean  @default(true) @map("sound_enabled") // 音声通知ON/OFF
   createdAt                 DateTime @default(now()) @map("created_at")
@@ -117,7 +98,6 @@ model Setting {
 model Record {
   id          String   @id @default(cuid())
   userId      String   @map("user_id")
-  taskId      String?  @map("task_id") // nullable（「項目なし」の場合）
   startTime   DateTime @map("start_time")
   endTime     DateTime @map("end_time")
   duration    Int      // 作業時間（分）
@@ -125,10 +105,8 @@ model Record {
 
   // リレーション
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
   @@index([userId])
-  @@index([taskId])
   @@index([startTime])
   @@map("records")
 }

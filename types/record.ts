@@ -4,8 +4,7 @@
 export interface CreateRecordInput {
   startTime: Date;
   endTime: Date;
-  duration: number;       // 作業時間（分）
-  taskId?: string | null; // タスクID（オプショナル）
+  duration: number; // 作業時間（分）
 }
 
 /**
@@ -23,7 +22,6 @@ export interface GetRecordsOptions {
 export interface Record {
   id: string;
   userId: string;
-  taskId: string | null;
   startTime: Date;
   endTime: Date;
   duration: number;
@@ -31,68 +29,25 @@ export interface Record {
 }
 
 /**
- * タスク情報を含む作業記録データの型
+ * 作業記録データの型（フォーマットされたデータ）
  */
-export interface RecordWithTask extends Record {
-  task: {
-    id: string;
-    name: string;
-  } | null;
+export interface FormattedRecord {
+  id: string;
+  /** 日付（例: "2024/01/15"） */
+  date: string;
+  /** 開始時刻（例: "14:30"） */
+  startTime: string;
+  /** 終了時刻（例: "15:00"） */
+  endTime: string;
+  /** 作業時間（分） */
+  duration: number;
 }
 
+
 /**
- * 日別の作業統計
+ * 本日の作業サマリー
  */
-export interface DailyStats {
-  date: string;  // YYYY-MM-DD
+export interface TodayStats {
   totalMinutes: number;
   recordCount: number;
 }
-
-/**
- * 月別の作業統計（年単位表示用）
- */
-export interface MonthlyStats {
-  month: string;  // YYYY-MM
-  totalMinutes: number;
-  recordCOunt: number;
-}
-
-/**
- * 週単位の統計データ
- */
-export interface WeeklyStats {
-  weekStart: Date;
-  weekEnd: Date;
-  totalMinutes: number;
-  dailyStats: DailyStats[];
-}
-
-/**
- * 月単位の統計データ
- */
-export interface MonthlyStatsDetail {
-  monthStart: Date;
-  monthEnd: Date;
-  totalMinutes: number;
-  dailyStats: DailyStats[];
-}
-
-/**
- * 年単位の統計データ
- */
-export interface YearlyStats {
-  yearStart: Date;
-  yearEnd: Date;
-  totalMinutes: number;
-  monthlyStats: MonthlyStats[];
-}
-
-/**
- * 期間別統計の共通型
- */
-export type PeriodStats = {
-  period: 'week' | 'month' | 'year';
-  totalMinutes: number;
-  stats: DailyStats[] | MonthlyStats[];
-};

@@ -1,10 +1,13 @@
 'use client';
-import { TimerType } from '@/types/timerType';
+import { Orbitron } from 'next/font/google';
 
-const RADIUS = 160;
+const orbitron = Orbitron({ subsets: ['latin'], weight: '400' });
+
+const IS_DESKTOP = window.innerWidth > 480;
+const RADIUS = IS_DESKTOP ? 140 : 120;
 const CIRCUMFERENCE = 2 * RADIUS * Math.PI;
-const SVG_WIDTH = 480;
-const SVG_HEIGHT = 480;
+const SVG_WIDTH = 360;
+const SVG_HEIGHT = 360;
 const CENTER_X = SVG_WIDTH / 2;
 const CENTER_Y = SVG_HEIGHT / 2;
 const BLUE_100 = '#d9e6ff';
@@ -15,7 +18,6 @@ const STROKE_FOREGROUND = BLUE_100;
 const STROKE_WIDTH = 8;
 
 interface TimerDisplayProps {
-  timerType: TimerType;
   timeLeft: number;
   initialTime: number;
   sessionCount?: number;
@@ -32,7 +34,7 @@ const formatTime = (time: number): { minutes: string; seconds: string } => {
   };
 };
 
-export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, maxSessions }: TimerDisplayProps) {
+export function TimerDisplay({ timeLeft, initialTime }: TimerDisplayProps) {
 
     // タイマーの進捗率を計算
   const progress = timeLeft / initialTime;
@@ -41,60 +43,65 @@ export function TimerDisplay({ timerType, timeLeft, initialTime, sessionCount, m
   const strokeDashoffset = CIRCUMFERENCE * progress;
 
   const { minutes, seconds } = formatTime(timeLeft);
+  const minutesLabel1 = minutes.slice(0, 1);
+  const minutesLabel2 = minutes.slice(1);
+  const secondsLabel1 = seconds.slice(0, 1);
+  const secondsLabel2 = seconds.slice(1);
 
-  let timerTitle: string;
-  switch(timerType) {
-    case 'focus':
-      timerTitle = 'focus time';
-      break;
-    case 'break':
-      timerTitle = 'break time';
-      break;
-    case 'long-break':
-      timerTitle = 'long break time';
-      break;
-    default:
-      timerTitle = 'focus time';
-      break;
-  }
 
   return (
-    <div className="flex flex-col flex-7 items-center justify-center max-w-3xl w-full relative">
-      <div className="absolute top-4 text-3xl">
-        {timerTitle}
-      </div>
-      {timerTitle === 'focus time' && sessionCount && maxSessions && (
-        <div className="absolute top-16 text-lg opacity-80">
-          {sessionCount}/{maxSessions} ポモドーロ
-        </div>
-      )}
-      <div className="absolute inset-0 flex items-center justify-center">
+    <div className="absolute inset-0 flex justify-center items-center" >
+      <div className={`absolute ${orbitron.className} z-10 flex items-center`}>
         <span
-          className="text-6xl text-white tabular-nums"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
           style={{
             textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
         >
-          {minutes}
+          {minutesLabel1}
         </span>
-        <span className="text-4xl text-white tabular-nums mx-2">:</span>
         <span
-          className="text-6xl text-white tabular-nums"
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
+          style={{
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          {minutesLabel2}
+        </span>
+        
+        <span 
+          className="text-5xl font-bold text-white tabular-nums mx-2 inline-block"
           style={{
             textShadow: `0 0 5px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
           }}
         >
-          {seconds}
+          :
+        </span>
+        <span
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
+          style={{
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          {secondsLabel1}
+        </span>
+        <span
+          className="text-5xl font-bold text-white tabular-nums inline-block text-right min-w-[1ch]"
+          style={{
+            textShadow: `0 0 10px ${BLUE_300}, 0 0 10px ${BLUE_500}`,
+          }}
+        >
+          {secondsLabel2}
         </span>
       </div>
-      <svg width="480" height="480" className="transform -rotate-90">
+      <svg width={SVG_WIDTH} height={SVG_HEIGHT} className="transform -rotate-90">
         <circle
           cx={CENTER_X}
           cy={CENTER_Y}
           r={RADIUS}
           stroke={STROKE_BACKGROUND}
           strokeWidth={STROKE_WIDTH}
-          fill="none"
+          fill="rgba(0, 0, 0, 0.3)"
         />
         <circle
           cx={CENTER_X}
