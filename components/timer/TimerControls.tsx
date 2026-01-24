@@ -56,7 +56,7 @@ export const TimerControls = memo(function TimerControls({
   };
 
   return (
-    <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 p-6">
+    <div className="flex gap-4 w-full max-w-md absolute z-10 bottom-0 p-8">
       {/* 左: SETTINGS または RESET */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-out ${isRunning ? 'opacity-0 pointer-events-none' : 'opacity-100'
