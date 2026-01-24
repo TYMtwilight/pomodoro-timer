@@ -5,6 +5,7 @@ import { useTimer } from '@/components/timer/useTimer';
 import { TimerLabel } from '@/components/timer/TimerLabel';
 import { TimerDisplay } from '@/components/timer/TimerDisplay';
 import { TimerControls } from '@/components/timer/TimerControls';
+import { PomodoroProgress } from '@/components/timer/PomodoroProgress';
 import { CompletionOverlay } from '@/components/timer/CompletionOverlay';
 import { TimerType } from '@/types/timerType';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -96,6 +97,7 @@ export function TimerPage({ timerType }: TimerPageProps) {
     <div className="flex flex-col items-center h-[calc(100vh-56px)] bg-black text-white">
       <TimerLabel timerType={timerType} isRunning={isRunning} />
       <TimerDisplay timeLeft={timeLeft} initialTime={initialTime} sessionCount={sessionCount} maxSessions={maxSessions} />
+      <PomodoroProgress sessionCount={sessionCount} maxSessions={maxSessions} />
       <TimerControls
         isRunning={isRunning}
         hasStarted={hasStarted}
