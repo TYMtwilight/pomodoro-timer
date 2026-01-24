@@ -2,9 +2,9 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSession } from '@/contexts/SessionContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useTimerState } from '@/contexts/TimerStateContext';
+import { useNotificationSound } from '@/components/timer/useNotificationSound';
 import { TimerType } from '@/types/timerType';
 import { createRecord } from '@/app/actions/records';
-import { useNotificationSound } from '@/components/timer/useNotificationSound';
 
 const SECONDS = 60;
 
@@ -15,6 +15,7 @@ export const useTimer = (
 ) => {
   const { settings } = useSettings();
   const { getSavedState, saveTimerState, clearTimerState } = useTimerState();
+  const { playNotificationSound } = useNotificationSound();
 
   // timerTypeに応じて初期時間を計算
   const initialTime = useMemo(() => {
@@ -51,7 +52,6 @@ export const useTimer = (
   const stateRef = useRef({ timeLeft, isRunning, hasStarted });
 
   const { sessionCount, maxSessions } = useSession();
-  const { playNotificationSound } = useNotificationSound();
 
   // タイマーをスタート/停止する関数
   const toggleTimer = useCallback(() => {
@@ -147,9 +147,6 @@ export const useTimer = (
 
       // タイマー完了時の処理
       const handleTimerComplete = async () => {
-        // 通知音を再生し、再生完了を待つ
-        await playNotificationSound();
-
         // タイマーの状態をクリア
         clearTimerState();
 
@@ -174,9 +171,11 @@ export const useTimer = (
         }
       };
 
-      // 非同期処理を実行してから、完了コールバックを呼び出す
+      // 非同期処理を実行
       handleTimerComplete()
         .then(() => {
+          // 作業記録保存完了後、通知音を再生しつつ完了コールバックを呼び出す
+          playNotificationSound();
           onComplete?.();
         })
         .catch((error) => {
