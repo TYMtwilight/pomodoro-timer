@@ -1,8 +1,9 @@
 'use client';
 import { useState,useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from '@/contexts/SessionContext';
+import { useTimerState } from '@/contexts/TimerStateContext';
 import { getTodayStats } from '@/app/actions/records';
 import { getNextTimerType} from '@/utils/timerFlow';
 import { CompletionLabel } from './CompletionLabel';
@@ -39,11 +40,13 @@ const formatTotalDuration = (totalMinutes: number): string => {
 };
 
 export default function CompletionPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const timerType: TimerType = searchParams.get('timerType') as TimerType;
   const [todayTotalMinutes, setTodayTotalMinutes] = useState(0);
   const [todayRecordCount, setTodayRecordCount] = useState(0);
   const { sessionCount, incrementSession, resetSession } = useSession();
+  const { clearTimerState } = useTimerState();
 
   useEffect(() => {
     if (timerType === 'focus') {
@@ -69,6 +72,13 @@ export default function CompletionPage() {
   const nextTimerType = getNextTimerType(timerType, sessionCount);
   const nextTimerLabel = TIMER_LABELS[nextTimerType];
   const nextTimerUrl = NEXT_TIMER_URLS[nextTimerType];
+
+  // 終了ボタンのハンドラー：コンテキストを初期化してホームに戻る
+  const handleExit = () => {
+    clearTimerState();
+    resetSession();
+    router.push('/');
+  };
 
   return (
     
@@ -109,16 +119,15 @@ export default function CompletionPage() {
           {/* 左: Exitボタン */}
           <div className="basis-[40%]">
             <div className="min-w-max">
-              <Link href="/">
-                <Button
-                  variant="outline"
-                  className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold text-md transition-all duration-200 active:scale-95"
-                  aria-label="作業を終了する"
-                >
-                  <DoorOpen className="w-6 h-6 mr-2" />
-                  終了する
-                </Button>
-              </Link>
+              <Button
+                variant="outline"
+                className="h-14 w-full rounded-lg border border-white bg-black hover:bg-white text-white font-semibold text-md transition-all duration-200 active:scale-95"
+                aria-label="作業を終了する"
+                onClick={handleExit}
+              >
+                <DoorOpen className="w-6 h-6 mr-2" />
+                終了する
+              </Button>
             </div>
           </div>
           {/* 右: STARTボタン */}
