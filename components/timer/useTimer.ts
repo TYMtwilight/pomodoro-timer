@@ -120,6 +120,11 @@ export const useTimer = (
       endTimeRef.current = Date.now() + timeLeft * 1000;
     }
 
+    // タイマーが実行中かつ終了時刻が記録されていない場合、終了時刻を計算
+    if (isRunning && !endTimeRef.current) {
+      endTimeRef.current = Date.now() + timeLeft * 1000;
+    }
+
     // マウント時：保存された状態から復元した場合、保存状態をクリア
     if (savedState) {
       clearTimerState();
@@ -182,7 +187,6 @@ export const useTimer = (
                   endTime: endTime,
                   duration: durationMinutes,
                 });
-                console.log('作業記録を保存しました');
                 // セッション数をインクリメント
                 incrementSession();
               } catch (error) {
