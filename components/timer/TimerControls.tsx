@@ -20,7 +20,6 @@ export const TimerControls = memo(function TimerControls({
   onToggle,
   onReset,
 }: TimerControlsProps) {
-
   /**
    * 左ボタンを返す
    * - 未開始（hasStarted = false）: SETTINGSボタン（/settingsへ遷移）
