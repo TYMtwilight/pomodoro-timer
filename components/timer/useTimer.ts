@@ -83,8 +83,7 @@ export const useTimer = (
 
       return newState;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [timeLeft]);
 
   const resetTimer = useCallback(() => {
     setIsRunning(false);
